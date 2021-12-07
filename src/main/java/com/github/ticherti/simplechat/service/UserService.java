@@ -2,13 +2,16 @@ package com.github.ticherti.simplechat.service;
 
 import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class UserService {
+    @Autowired
     private UserRepository userRepository;
 
-    public User create(User user) {
+    public User save(User user) {
         return userRepository.save(user);
     }
 

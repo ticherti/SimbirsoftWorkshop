@@ -2,13 +2,16 @@ package com.github.ticherti.simplechat.service;
 
 import com.github.ticherti.simplechat.entity.Message;
 import com.github.ticherti.simplechat.repository.MessageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class MessageService {
+    @Autowired
     private MessageRepository messageRepository;
 
-    public Message create(Message message) {
+    public Message save(Message message) {
         return messageRepository.save(message);
     }
 

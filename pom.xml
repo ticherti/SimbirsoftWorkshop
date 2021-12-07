@@ -14,7 +14,10 @@
 	<name>simple-chat</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
+		<mapstruck.version>1.4.2.Final</mapstruck.version>
 		<java.version>17</java.version>
+		<springboot.version>2.6.1</springboot.version>
+
 	</properties>
 	<dependencies>
 		<dependency>
@@ -51,6 +54,19 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!--MapStruck-->
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruck.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>${mapstruck.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -58,11 +74,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${springboot.version}</version>
 				<configuration>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
 						</exclude>
 					</excludes>
 				</configuration>

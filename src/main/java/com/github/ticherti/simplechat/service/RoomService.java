@@ -2,13 +2,17 @@ package com.github.ticherti.simplechat.service;
 
 import com.github.ticherti.simplechat.entity.Room;
 import com.github.ticherti.simplechat.repository.RoomRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class RoomService {
+
+    @Autowired
     private RoomRepository roomRepository;
 
-    public Room create(Room room) {
+    public Room save(Room room) {
         return roomRepository.save(room);
     }
 
