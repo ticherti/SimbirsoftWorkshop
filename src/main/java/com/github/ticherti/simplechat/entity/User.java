@@ -35,14 +35,14 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "room_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "room_id")
     )
     private List<Room> rooms;
 
-    @Column(name = "is_banned", nullable = false)
+    @Column(name = "is_banned")
     private boolean isBanned;
 
     @Column(name = "start_ban_time")

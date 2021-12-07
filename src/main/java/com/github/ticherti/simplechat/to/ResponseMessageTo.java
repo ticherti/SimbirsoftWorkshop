@@ -9,12 +9,10 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Getter
 @Setter
-public class MessageTo {
-
-    private RoomTo room;
-    private UserTo user;
+public class ResponseMessageTo {
+    private long id;
+    private ResponseRoomTo room;
+    private ResponseUserTo user;
     private String content;
-    //    todo Not sure how it will work. Probably better to delete the field for the reason that rest api won't send time,
-//    but it will be created at the DB
     private Timestamp dateTime;
 }

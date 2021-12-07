@@ -20,23 +20,22 @@ import java.util.Objects;
 public class Room implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private  long id;
+    private long id;
 
     @Column(name = "name", nullable = false, unique = true)
     @Size(min = 3, max = 20)
-    private  String name;
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
-    private  User creator;
+    private User creator;
 
-    //    todo check how many lines there will be if I put here also a list with messages
-
-    @ManyToMany(mappedBy = "rooms")
-    private  List<User> users;
+// todo Find out if users will be deleted by CascadeType.All or only there ties in romm_user
+    @ManyToMany(mappedBy = "rooms", cascade = CascadeType.ALL)
+    private List<User> users;
 
     @Column(name = "is_private", nullable = false)
-    private  boolean isPrivate;
+    private boolean isPrivate;
 
     @Override
     public boolean equals(Object o) {

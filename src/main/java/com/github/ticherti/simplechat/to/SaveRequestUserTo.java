@@ -8,7 +8,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserTo {
+public class SaveRequestUserTo {
 
     private String login;
     private String password;
