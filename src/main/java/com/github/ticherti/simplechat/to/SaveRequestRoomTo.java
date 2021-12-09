@@ -10,9 +10,8 @@ import lombok.Setter;
 public class SaveRequestRoomTo {
 
     private String name;
-    private SaveRequestUserTo creator;
+    private Long userId;
     private boolean isPrivate;
-
 }
 
 

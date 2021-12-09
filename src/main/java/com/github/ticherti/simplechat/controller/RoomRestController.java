@@ -20,25 +20,25 @@ public class RoomRestController {
     @Autowired
     private RoomService roomService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseRoomTo create(@RequestBody SaveRequestRoomTo roomTo) {
         Room room = roomService.save(roomMapper.toEntity(roomTo));
 //        todo Add not null check, probably in services
         return roomMapper.toTO(room);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping( "/{id}")
     public ResponseRoomTo read(@PathVariable long id) {
 //        todo Check consistency somehow
         return roomMapper.toTO(roomService.read(id));
     }
-    @GetMapping
+    @GetMapping("")
     public List<ResponseRoomTo> readAll(){
 //        todo Check consistency somehow
         return roomMapper.allToTOs(roomService.readAll());
     }
 
-    @PutMapping
+    @PutMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody ResponseRoomTo roomTo){
 //        todo Check consistency and probably not found case

@@ -12,7 +12,7 @@ import java.util.List;
 public class ResponseRoomTo {
     private long id;
     private String name;
-    private ResponseUserTo creator;
+    private Long userId;
     private List<ResponseUserTo> users;
     private boolean isPrivate;
 

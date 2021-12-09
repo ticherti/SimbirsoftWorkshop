@@ -20,35 +20,36 @@ public class MessageRestController {
     @Autowired
     private MessageService messageService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseMessageTo create(@RequestBody SaveRequestMessageTo messageTo) {
         Message message = messageService.save(messageMapper.toEntity(messageTo));
 //        todo Add not null check, probably in services
         return messageMapper.toTO(message);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     public ResponseMessageTo read(@PathVariable long id) {
 //        todo Check consistency somehow
         return messageMapper.toTO(messageService.read(id));
     }
-    @GetMapping
-    public List<ResponseMessageTo> readAll(){
+
+    @GetMapping("")
+    public List<ResponseMessageTo> readAll() {
 //        todo Check consistency somehow
         return messageMapper.allToTOs(messageService.readAll());
     }
 
-    @PutMapping
+    @PutMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody ResponseMessageTo messageTo){
+    public void update(@RequestBody ResponseMessageTo messageTo) {
 //        todo Check consistency and probably not found case
-//        Find out if I need to get id in the parameters
-            Message message = messageService.update(messageMapper.toEntity(messageTo));
+//        Find out if I need to get id in the parameters for consistency check
+        Message message = messageService.update(messageMapper.toEntity(messageTo));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable long id){
+    public void delete(@PathVariable long id) {
         messageService.delete(id);
     }
 }
