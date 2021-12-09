@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -16,7 +15,7 @@ public class ResponseUserTo {
     private String login;
     private String password;
     private Role role;
-    private List<ResponseRoomTo> rooms;
+    //    private List<ResponseRoomTo> rooms;
     private boolean isBanned;
     private Timestamp startBanTime;
     private Timestamp endBanTime;

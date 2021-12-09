@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,15 +28,18 @@ public class Room implements Serializable {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "creator_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User creator;
 
-// todo Find out if users will be deleted by CascadeType.All or only there ties in romm_user
-    @ManyToMany(mappedBy = "rooms", cascade = CascadeType.ALL)
+    //    @ManyToMany(mappedBy = "rooms", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToMany(mappedBy = "rooms", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<User> users;
 
-    @Column(name = "is_private", nullable = false)
+    @Column(name = "is_private")
     private boolean isPrivate;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Message> messages = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

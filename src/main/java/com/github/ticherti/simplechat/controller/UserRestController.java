@@ -20,7 +20,7 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseUserTo create(@RequestBody SaveRequestUserTo userTo) {
         User user = userService.save(userMapper.toEntity(userTo));
 //        todo Add not null check, probably in services
@@ -32,13 +32,13 @@ public class UserRestController {
 //        todo Check consistency somehow
         return userMapper.toTO(userService.read(id));
     }
-    @GetMapping
+    @GetMapping("")
     public List<ResponseUserTo> readAll(){
 //        todo Check consistency somehow
         return userMapper.allToTOs(userService.readAll());
     }
 
-    @PutMapping
+    @PutMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody ResponseUserTo userTo){
 //        todo Check consistency and probably not found case

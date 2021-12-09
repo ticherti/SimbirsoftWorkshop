@@ -22,24 +22,23 @@ import java.util.Objects;
 public class Message implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
-    @ManyToOne
-    @JoinColumn(name="room_id", nullable = false)
-    private Room room;
-
-    @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
-    private User user;
+    private Long id;
 
     @Column(name = "content", nullable = false)
     @NotBlank
     @Size(max = 1000)
     private String content;
 
-    @Column(name = "date_time", updatable = false)
-    private Timestamp dateTime = Timestamp.from(Instant.now());
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "room_id", referencedColumnName = "id")
+    private Room room;
+
+    @Column(name = "date_time")
+    private Timestamp dateTime;
 
     @Override
     public boolean equals(Object o) {
