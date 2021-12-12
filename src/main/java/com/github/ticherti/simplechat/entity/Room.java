@@ -26,16 +26,20 @@ public class Room implements Serializable {
     @Size(min = 3, max = 20)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
-// todo Find out if users will be deleted by CascadeType.All or only there ties in romm_user
-    @ManyToMany(mappedBy = "rooms", cascade = CascadeType.ALL)
-    private List<User> users;
-
     @Column(name = "is_private", nullable = false)
     private boolean isPrivate;
+
+    //    todo Find out the best way to deal with cascade type Remove
+    @ManyToMany(mappedBy = "rooms", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<User> users;
+
+    // todo Find out if I should only leave Remove here
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "room", cascade = CascadeType.ALL)
+    private List<Message> messages;
 
     @Override
     public boolean equals(Object o) {

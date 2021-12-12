@@ -1,4 +1,4 @@
-package com.github.ticherti.simplechat.to;
+package com.github.ticherti.simplechat.dto;
 
 import com.github.ticherti.simplechat.entity.Role;
 import lombok.AllArgsConstructor;
@@ -11,12 +11,12 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ResponseUserTo {
+public class ResponseUserDTO {
     private long id;
     private String login;
     private String password;
     private Role role;
-    private List<ResponseRoomTo> rooms;
+    private List<ResponseRoomDTO> rooms;
     private boolean isBanned;
     private Timestamp startBanTime;
     private Timestamp endBanTime;
