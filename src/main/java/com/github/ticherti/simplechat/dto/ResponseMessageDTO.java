@@ -1,4 +1,4 @@
-package com.github.ticherti.simplechat.to;
+package com.github.ticherti.simplechat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,10 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ResponseMessageTo {
+public class ResponseMessageDTO {
     private long id;
-    private ResponseRoomTo room;
-    private ResponseUserTo user;
+    private ResponseRoomDTO room;
+    private ResponseUserDTO user;
     private String content;
     private Timestamp dateTime;
 }

@@ -1,4 +1,4 @@
-package com.github.ticherti.simplechat.to;
+package com.github.ticherti.simplechat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +9,11 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ResponseRoomTo {
+public class ResponseRoomDTO {
     private long id;
     private String name;
-    private ResponseUserTo creator;
-    private List<ResponseUserTo> users;
+    private ResponseUserDTO creator;
+    private List<ResponseUserDTO> users;
     private boolean isPrivate;
 
 }

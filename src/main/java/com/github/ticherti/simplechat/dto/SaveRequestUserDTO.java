@@ -1,4 +1,4 @@
-package com.github.ticherti.simplechat.to;
+package com.github.ticherti.simplechat.dto;
 
 import com.github.ticherti.simplechat.entity.Role;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class SaveRequestUserTo {
+public class SaveRequestUserDTO {
 
     private String login;
     private String password;

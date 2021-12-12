@@ -10,13 +10,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Objects;
 
 @Entity
 @Table(name = "messages")
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @Getter
 @Setter
 public class Message implements Serializable {
@@ -25,11 +24,11 @@ public class Message implements Serializable {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name="room_id", nullable = false)
+    @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "content", nullable = false)
@@ -37,9 +36,8 @@ public class Message implements Serializable {
     @Size(max = 1000)
     private String content;
 
-    @Column(name = "date_time", updatable = false)
-    private Timestamp dateTime = Timestamp.from(Instant.now());
-
+    @Column(name = "date_time")
+    private Timestamp dateTime;
 
     @Override
     public boolean equals(Object o) {
