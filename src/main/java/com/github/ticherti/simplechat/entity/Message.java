@@ -1,5 +1,6 @@
 package com.github.ticherti.simplechat.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -38,5 +39,5 @@ public class Message implements Serializable {
 
     @Column(name = "date_time")
     @CreationTimestamp
-    private Timestamp creationgDateTime;
+    private Timestamp creationDateTime;
 }

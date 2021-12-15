@@ -40,11 +40,11 @@ public class SimpleChatApplication implements CommandLineRunner {
         User user1 = new User();
         user1.setLogin("login test");
         user1.setPassword("password");
-        user1.setRole(Role.moderator);
+        user1.setRole(Role.MODERATOR);
         User user2 = new User();
         user2.setLogin("login2");
         user2.setPassword("password2");
-        user2.setRole(Role.moderator);
+        user2.setRole(Role.MODERATOR);
 
         Room room = new Room();
         room.setCreator(user1);
