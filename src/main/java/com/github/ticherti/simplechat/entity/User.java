@@ -1,9 +1,6 @@
 package com.github.ticherti.simplechat.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -11,7 +8,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -19,9 +15,12 @@ import java.util.Objects;
 @NoArgsConstructor(force = true)
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"rooms", "messages"})
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @EqualsAndHashCode.Include
     private long id;
 
     @Column(name = "login", unique = true, nullable = false)
@@ -55,30 +54,4 @@ public class User implements Serializable {
 
     @Column(name = "end_ban_time")
     private Timestamp endBanTime;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id == user.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "\nUser{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                ", isBanned=" + isBanned +
-                ", startBanTime=" + startBanTime +
-                ", endBanTime=" + endBanTime +
-                '}';
-    }
 }
