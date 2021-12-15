@@ -1,6 +1,6 @@
 package com.github.ticherti.simplechat.controller;
 
-import com.github.ticherti.simplechat.entity.Message;
+import com.github.ticherti.simplechat.exception.NullMessageException;
 import com.github.ticherti.simplechat.service.MessageService;
 import com.github.ticherti.simplechat.to.ResponseMessageTo;
 import com.github.ticherti.simplechat.to.SaveRequestMessageTo;
@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.github.ticherti.simplechat.mapper.MessageMapper.messageMapper;
-
 @RestController
 @RequestMapping(value = "rest/messages", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MessageRestController {
@@ -26,32 +24,34 @@ public class MessageRestController {
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseMessageTo create(@RequestBody SaveRequestMessageTo messageTo) {
         log.info("creating a message");
-        Message message = messageService.save(messageMapper.toEntity(messageTo));
-//        todo Add not null check, probably in services
-        return messageMapper.toTO(message);
+//        todo Extend entities from base abstract. Refactor messages classes, extract null checks.
+        if (messageTo == null) {
+            throw new NullMessageException();
+        }
+        return messageService.save(messageTo);
     }
 
     @GetMapping("/{id}")
     public ResponseMessageTo read(@PathVariable long id) {
         log.info("Getting a message " + id);
-//        todo Check consistency somehow
-        return messageMapper.toTO(messageService.read(id));
+        return messageService.read(id);
     }
 
     @GetMapping("")
     public List<ResponseMessageTo> readAll() {
         log.info("Getting all messages");
-//        todo Check consistency somehow
-        return messageMapper.allToTOs(messageService.readAll());
+        return messageService.readAll();
     }
 
     @PutMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody ResponseMessageTo messageTo) {
-        log.info("updating message " + messageTo.getId());
-//        todo Check consistency and probably not found case
-//        Find out if I need to get id in the parameters for consistency check
-        Message message = messageService.update(messageMapper.toEntity(messageTo));
+        log.info("Updating a message " + messageTo.getId());
+//        todo Find out if I need to get id in the parameters for consistency  and security check
+        if (messageTo == null) {
+            throw new NullMessageException();
+        }
+        messageService.update(messageTo);
     }
 
     @DeleteMapping("/{id}")

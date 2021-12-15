@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 import java.util.Collection;
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
     UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 

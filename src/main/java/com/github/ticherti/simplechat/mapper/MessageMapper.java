@@ -5,13 +5,13 @@ import com.github.ticherti.simplechat.to.ResponseMessageTo;
 import com.github.ticherti.simplechat.to.SaveRequestMessageTo;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.context.annotation.Bean;
 
 import java.util.Collection;
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface MessageMapper {
-    MessageMapper messageMapper = Mappers.getMapper(MessageMapper.class);
 
     Message toEntity(ResponseMessageTo responseMessageTo);
 
