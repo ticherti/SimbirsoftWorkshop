@@ -4,22 +4,51 @@ import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.to.ResponseUserTo;
 import com.github.ticherti.simplechat.to.SaveRequestUserTo;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.Collection;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    UserMapper userMapper = Mappers.getMapper(UserMapper.class);
-
+    @Mappings({
+            @Mapping(target = "id", source = "id"),
+            @Mapping(target = "login", source = "login"),
+            @Mapping(target = "password", source = "password"),
+            @Mapping(target = "role", source = "role"),
+            @Mapping(target = "isBanned", source = "isBanned"),
+            @Mapping(target = "startBanTime", source = "startBanTime"),
+            @Mapping(target = "endBanTime", source = "endBanTime")
+    })
     User toEntity(ResponseUserTo responseUserTo);
 
+    @Mappings({
+            @Mapping(target = "login", source = "login"),
+            @Mapping(target = "password", source = "password"),
+            @Mapping(target = "role", source = "role")
+    })
     User toEntity(SaveRequestUserTo requestUserTo);
 
+    @Mappings({
+            @Mapping(target = "id", source = "id"),
+            @Mapping(target = "login", source = "login"),
+            @Mapping(target = "password", source = "password"),
+            @Mapping(target = "role", source = "role"),
+            @Mapping(target = "isBanned", source = "isBanned"),
+            @Mapping(target = "startBanTime", source = "startBanTime"),
+            @Mapping(target = "endBanTime", source = "endBanTime")
+    })
     ResponseUserTo toTO(User user);
 
-    List<User> allToEntities(Collection<ResponseUserTo> userTos);
-
+    @Mappings({
+            @Mapping(target = "id", source = "id"),
+            @Mapping(target = "login", source = "login"),
+            @Mapping(target = "password", source = "password"),
+            @Mapping(target = "role", source = "role"),
+            @Mapping(target = "isBanned", source = "isBanned"),
+            @Mapping(target = "startBanTime", source = "startBanTime"),
+            @Mapping(target = "endBanTime", source = "endBanTime")
+    })
     List<ResponseUserTo> allToTOs(Collection<User> users);
 }

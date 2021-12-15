@@ -21,9 +21,14 @@ import static org.slf4j.LoggerFactory.getLogger;
 @RequiredArgsConstructor
 public class MessageService {
     private static final Logger log = getLogger(MessageService.class);
-    @Autowired
+
     private MessageRepository messageRepository;
     private MessageMapper messageMapper;
+
+    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper) {
+        this.messageRepository = messageRepository;
+        this.messageMapper = messageMapper;
+    }
 
     @Transactional
     public ResponseMessageTo save(SaveRequestMessageTo requestMessageTo) {

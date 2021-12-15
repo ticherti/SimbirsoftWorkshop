@@ -4,22 +4,46 @@ import com.github.ticherti.simplechat.entity.Room;
 import com.github.ticherti.simplechat.to.ResponseRoomTo;
 import com.github.ticherti.simplechat.to.SaveRequestRoomTo;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.Collection;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface RoomMapper {
-    RoomMapper roomMapper = Mappers.getMapper(RoomMapper.class);
 
+    @Mappings({
+            @Mapping(target = "id", source = "id"),
+            @Mapping(target = "name", source = "name"),
+            @Mapping(target = "userId", source = "userId"),
+            @Mapping(target = "users", source = "users"),
+            @Mapping(target = "isPrivate", source = "isPrivate")
+    })
     Room toEntity(ResponseRoomTo responseRoomTo);
 
+    @Mappings({
+            @Mapping(target = "name", source = "name"),
+            @Mapping(target = "userId", source = "userId"),
+            @Mapping(target = "isPrivate", source = "isPrivate")
+    })
     Room toEntity(SaveRequestRoomTo requestRoomTo);
 
+    @Mappings({
+            @Mapping(target = "id", source = "id"),
+            @Mapping(target = "name", source = "name"),
+            @Mapping(target = "userId", source = "userId"),
+            @Mapping(target = "users", source = "users"),
+            @Mapping(target = "isPrivate", source = "isPrivate")
+    })
     ResponseRoomTo toTO(Room room);
 
-    List<Room> allToEntities(Collection<ResponseRoomTo> roomTos);
-
+    @Mappings({
+            @Mapping(target = "id", source = "id"),
+            @Mapping(target = "name", source = "name"),
+            @Mapping(target = "userId", source = "userId"),
+            @Mapping(target = "users", source = "users"),
+            @Mapping(target = "isPrivate", source = "isPrivate")
+    })
     List<ResponseRoomTo> allToTOs(Collection<Room> rooms);
 }
