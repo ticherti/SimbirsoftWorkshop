@@ -1,6 +1,7 @@
 package com.github.ticherti.simplechat.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -36,5 +37,6 @@ public class Message implements Serializable {
     private String content;
 
     @Column(name = "date_time")
-    private Timestamp dateTime;
+    @CreationTimestamp
+    private Timestamp creationgDateTime;
 }
