@@ -27,8 +27,9 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
-    //    probably should return something 
+    //    probably should return something.
     public void delete(long id) {
+//        int as a result for deletion
         messageRepository.delete(id);
     }
 }

@@ -30,6 +30,6 @@ public class RoomService {
 
     //    probably should return something
     public void delete(long id) {
-        roomRepository.deleteById(id);
+        roomRepository.delete(id);
     }
 }

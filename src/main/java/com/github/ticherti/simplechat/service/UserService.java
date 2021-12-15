@@ -29,6 +29,6 @@ public class UserService {
 
     //    probably should return something
     public void delete(long id) {
-        userRepository.deleteById(id);
+        userRepository.delete(id);
     }
 }
