@@ -29,6 +29,6 @@ public class MessageService {
 
     //    probably should return something 
     public void delete(long id) {
-        messageRepository.deleteById(id);
+        messageRepository.delete(id);
     }
 }
