@@ -42,7 +42,7 @@ public class User implements Serializable {
     )
     private List<Room> rooms;
 
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE, orphanRemoval = false)
     private List<Room> createdRooms;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

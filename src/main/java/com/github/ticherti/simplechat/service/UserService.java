@@ -55,12 +55,13 @@ public class UserService {
     @Transactional
     public ResponseUserTo update(ResponseUserTo responseUserTo) {
 //        todo probably login should be changeable
+//        todo ONE
         Optional<User> existedUser = userRepository.findById(responseUserTo.getId());
         long id = responseUserTo.getId();
         if (existedUser.isPresent()) {
             User user = userMapper.toEntity(responseUserTo);
             user.setId(id);
-            return userMapper.toTO(user);
+            return userMapper.toTO(userRepository.save(user));
         } else {
             throw new UserNotFoundException(id);
         }
