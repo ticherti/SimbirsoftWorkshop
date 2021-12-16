@@ -6,6 +6,7 @@ import com.github.ticherti.simplechat.mapper.UserMapper;
 import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.to.ResponseUserTo;
 import com.github.ticherti.simplechat.to.SaveRequestUserTo;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserService {
     private static final Logger log = getLogger(UserService.class);
 

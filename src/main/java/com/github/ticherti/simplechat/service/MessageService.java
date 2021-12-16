@@ -1,12 +1,16 @@
 package com.github.ticherti.simplechat.service;
 
 import com.github.ticherti.simplechat.entity.Message;
+import com.github.ticherti.simplechat.entity.Room;
+import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.exception.MessageNotFoundException;
 import com.github.ticherti.simplechat.mapper.MessageMapper;
 import com.github.ticherti.simplechat.repository.MessageRepository;
+import com.github.ticherti.simplechat.repository.RoomRepository;
+import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.to.ResponseMessageTo;
 import com.github.ticherti.simplechat.to.SaveRequestMessageTo;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,22 +22,24 @@ import java.util.Optional;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class MessageService {
     private static final Logger log = getLogger(MessageService.class);
 
     private MessageRepository messageRepository;
+    private RoomRepository roomRepository;
+    private UserRepository userRepository;
     private MessageMapper messageMapper;
-
-    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper) {
-        this.messageRepository = messageRepository;
-        this.messageMapper = messageMapper;
-    }
 
     @Transactional
     public ResponseMessageTo save(SaveRequestMessageTo requestMessageTo) {
         log.info("Saving message");
-        return messageMapper.toTO(messageRepository.save(messageMapper.toEntity(requestMessageTo)));
+        Room room = roomRepository.getById(requestMessageTo.getRoomId());
+        User user = userRepository.getById(requestMessageTo.getUserId());
+        Message message = messageMapper.toEntity(requestMessageTo);
+        message.setRoom(room);
+        message.setUser(user);
+        return messageMapper.toTO(messageRepository.save(message));
     }
 
     @Transactional(readOnly = true)

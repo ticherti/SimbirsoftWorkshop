@@ -6,6 +6,7 @@ import com.github.ticherti.simplechat.mapper.RoomMapper;
 import com.github.ticherti.simplechat.repository.RoomRepository;
 import com.github.ticherti.simplechat.to.ResponseRoomTo;
 import com.github.ticherti.simplechat.to.SaveRequestRoomTo;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RoomService {
     private static final Logger log = getLogger(RoomService.class);
 

@@ -16,25 +16,23 @@ public interface RoomMapper {
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "name", source = "name"),
-            @Mapping(target = "userId", source = "userId"),
             @Mapping(target = "users", source = "users"),
-            @Mapping(target = "isPrivate", source = "isPrivate")
+            @Mapping(target = "private", source = "private")
     })
     Room toEntity(ResponseRoomTo responseRoomTo);
 
     @Mappings({
             @Mapping(target = "name", source = "name"),
-            @Mapping(target = "userId", source = "userId"),
-            @Mapping(target = "isPrivate", source = "isPrivate")
+            @Mapping(target = "private", source = "private")
     })
     Room toEntity(SaveRequestRoomTo requestRoomTo);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "name", source = "name"),
-            @Mapping(target = "userId", source = "userId"),
+            @Mapping(target = "userId", source = "creator.id"),
             @Mapping(target = "users", source = "users"),
-            @Mapping(target = "isPrivate", source = "isPrivate")
+            @Mapping(target = "private", source = "private")
     })
     ResponseRoomTo toTO(Room room);
 

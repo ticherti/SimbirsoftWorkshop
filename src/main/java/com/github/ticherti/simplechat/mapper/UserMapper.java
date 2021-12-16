@@ -17,7 +17,7 @@ public interface UserMapper {
             @Mapping(target = "login", source = "login"),
             @Mapping(target = "password", source = "password"),
             @Mapping(target = "role", source = "role"),
-            @Mapping(target = "isBanned", source = "isBanned"),
+            @Mapping(target = "banned", source = "banned"),
             @Mapping(target = "startBanTime", source = "startBanTime"),
             @Mapping(target = "endBanTime", source = "endBanTime")
     })
@@ -35,7 +35,7 @@ public interface UserMapper {
             @Mapping(target = "login", source = "login"),
             @Mapping(target = "password", source = "password"),
             @Mapping(target = "role", source = "role"),
-            @Mapping(target = "isBanned", source = "isBanned"),
+            @Mapping(target = "banned", source = "banned"),
             @Mapping(target = "startBanTime", source = "startBanTime"),
             @Mapping(target = "endBanTime", source = "endBanTime")
     })

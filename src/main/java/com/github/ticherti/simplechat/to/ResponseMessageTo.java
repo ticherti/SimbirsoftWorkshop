@@ -16,5 +16,5 @@ public class ResponseMessageTo {
     private ResponseRoomTo room;
     private ResponseUserTo user;
     private String content;
-    private Timestamp dateTime;
+    private Timestamp creationDateTime;
 }

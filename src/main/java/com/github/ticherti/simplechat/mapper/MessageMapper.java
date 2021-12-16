@@ -17,13 +17,11 @@ public interface MessageMapper {
             @Mapping(target = "room", source = "room"),
             @Mapping(target = "user", source = "user"),
             @Mapping(target = "content", source = "content"),
-            @Mapping(target = "dateTime", source = "dateTime")
+            @Mapping(target = "creationDateTime", source = "creationDateTime")
     })
     Message toEntity(ResponseMessageTo responseMessageTo);
 
     @Mappings({
-            @Mapping(target = "room", source = "room"),
-            @Mapping(target = "user", source = "user"),
             @Mapping(target = "content", source = "content")
     })
     Message toEntity(SaveRequestMessageTo requestMessageTo);
@@ -33,7 +31,7 @@ public interface MessageMapper {
             @Mapping(target = "room", source = "room"),
             @Mapping(target = "user", source = "user"),
             @Mapping(target = "content", source = "content"),
-            @Mapping(target = "dateTime", source = "dateTime")
+            @Mapping(target = "creationDateTime", source = "creationDateTime")
     })
     ResponseMessageTo toTO(Message message);
 
@@ -42,7 +40,7 @@ public interface MessageMapper {
             @Mapping(target = "room", source = "room"),
             @Mapping(target = "user", source = "user"),
             @Mapping(target = "content", source = "content"),
-            @Mapping(target = "dateTime", source = "dateTime")
+            @Mapping(target = "creationDateTime", source = "creationDateTime")
     })
     List<ResponseMessageTo> allToTOs(Collection<Message> messages);
 }

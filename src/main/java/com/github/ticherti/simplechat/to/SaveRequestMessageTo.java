@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class SaveRequestMessageTo {
 
-    private SaveRequestRoomTo room;
-    private SaveRequestUserTo user;
+    private Long roomId;
+    private Long userId;
     private String content;
 }
