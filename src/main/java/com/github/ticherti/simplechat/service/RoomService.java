@@ -1,9 +1,11 @@
 package com.github.ticherti.simplechat.service;
 
 import com.github.ticherti.simplechat.entity.Room;
+import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.exception.RoomNotFoundException;
 import com.github.ticherti.simplechat.mapper.RoomMapper;
 import com.github.ticherti.simplechat.repository.RoomRepository;
+import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.to.ResponseRoomTo;
 import com.github.ticherti.simplechat.to.SaveRequestRoomTo;
 import lombok.AllArgsConstructor;
@@ -23,12 +25,17 @@ public class RoomService {
     private static final Logger log = getLogger(RoomService.class);
 
     private RoomRepository roomRepository;
+    private UserRepository userRepository;
     private RoomMapper roomMapper;
 
     @Transactional
     public ResponseRoomTo save(SaveRequestRoomTo requestRoomTo) {
+//        todo check user, throw some exceptions
         log.info("Saving room");
-        return roomMapper.toTO(roomRepository.save(roomMapper.toEntity(requestRoomTo)));
+        User creator = userRepository.getById(requestRoomTo.getUserId());
+        Room room = roomMapper.toEntity(requestRoomTo);
+        room.setCreator(creator);
+        return roomMapper.toTO(roomRepository.save(room));
     }
 
     @Transactional(readOnly = true)
@@ -50,12 +57,17 @@ public class RoomService {
 
     @Transactional
     public ResponseRoomTo update(ResponseRoomTo responseRoomTo) {
+//        todo something with id here. Also authority question and private-don't-change one.
         Optional<Room> existedRoom = roomRepository.findById(responseRoomTo.getId());
         long id = responseRoomTo.getId();
         if (existedRoom.isPresent()) {
+            //        todo check user, throw some exceptions
+            log.info("Updating room, room isPresent");
             Room room = roomMapper.toEntity(responseRoomTo);
+            User creator = userRepository.getById(responseRoomTo.getUserId());
+            room.setCreator(creator);
             room.setId(id);
-            return roomMapper.toTO(room);
+            return roomMapper.toTO(roomRepository.save(room));
         } else {
             throw new RoomNotFoundException(id);
         }

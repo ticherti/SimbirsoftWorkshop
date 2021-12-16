@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SaveRequestRoomTo {
-
     private String name;
     private Long userId;
     private boolean isPrivate;
