@@ -1,7 +1,9 @@
 package com.github.ticherti.simplechat.service;
 
 import com.github.ticherti.simplechat.entity.Role;
+import com.github.ticherti.simplechat.entity.Room;
 import com.github.ticherti.simplechat.entity.User;
+import com.github.ticherti.simplechat.exception.RoomNotFoundException;
 import com.github.ticherti.simplechat.exception.UserNotFoundException;
 import com.github.ticherti.simplechat.mapper.UserMapper;
 import com.github.ticherti.simplechat.repository.UserRepository;
@@ -65,9 +67,12 @@ public class UserService {
     }
 
     public void delete(long id) {
+//        todo Should decide something to delete created rooms. Or change creator field in Room to nullable.
         log.info("Deleting user");
-        if (userRepository.delete(id) == 0) {
-            throw new UserNotFoundException(id);
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()) {
+            throw new RoomNotFoundException(id);
         }
+        userRepository.deleteById(id);
     }
 }

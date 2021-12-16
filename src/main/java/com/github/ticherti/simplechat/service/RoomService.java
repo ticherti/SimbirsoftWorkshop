@@ -75,8 +75,10 @@ public class RoomService {
 
     public void delete(long id) {
         log.info("Deleting room");
-        if (roomRepository.delete(id) == 0) {
+        Optional<Room> room = roomRepository.findById(id);
+        if (!room.isPresent()) {
             throw new RoomNotFoundException(id);
         }
+        roomRepository.deleteById(id);
     }
 }
