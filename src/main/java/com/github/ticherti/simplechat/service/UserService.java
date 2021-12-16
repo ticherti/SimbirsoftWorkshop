@@ -1,5 +1,6 @@
 package com.github.ticherti.simplechat.service;
 
+import com.github.ticherti.simplechat.entity.Role;
 import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.exception.UserNotFoundException;
 import com.github.ticherti.simplechat.mapper.UserMapper;
@@ -7,7 +8,6 @@ import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.to.ResponseUserTo;
 import com.github.ticherti.simplechat.to.SaveRequestUserTo;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,9 @@ public class UserService {
     @Transactional
     public ResponseUserTo save(SaveRequestUserTo requestUserTo) {
         log.info("Saving user");
-        return userMapper.toTO(userRepository.save(userMapper.toEntity(requestUserTo)));
+        User user = userMapper.toEntity(requestUserTo);
+        user.setRole(Role.USER);
+        return userMapper.toTO(userRepository.save(user));
     }
 
     @Transactional(readOnly = true)
@@ -50,6 +52,7 @@ public class UserService {
 
     @Transactional
     public ResponseUserTo update(ResponseUserTo responseUserTo) {
+//        todo probably login should be changeable
         Optional<User> existedUser = userRepository.findById(responseUserTo.getId());
         long id = responseUserTo.getId();
         if (existedUser.isPresent()) {

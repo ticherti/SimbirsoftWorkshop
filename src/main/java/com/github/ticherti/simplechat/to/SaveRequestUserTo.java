@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SaveRequestUserTo {
-
+//todo probably should delete Role from this DTO
     private String login;
     private String password;
     private Role role;

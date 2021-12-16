@@ -66,7 +66,7 @@ public class MessageService {
         if (existedMessage.isPresent()) {
             Message message = messageMapper.toEntity(responseMessageTo);
             message.setId(id);
-            return messageMapper.toTO(message);
+            return messageMapper.toTO(messageRepository.save(message));
         } else {
             throw new MessageNotFoundException(id);
         }
