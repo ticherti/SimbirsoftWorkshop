@@ -24,6 +24,9 @@ public class RoomRestController {
     public ResponseRoomDTO create(@RequestBody SaveRequestRoomDTO roomTo) {
         Room room = roomService.save(roomMapper.toEntity(roomTo));
 //        todo Add not null check, probably in services
+        if (roomTo == null) {
+            throw new NullRoomException();
+        }
         return roomMapper.toTO(room);
     }
 
@@ -44,7 +47,10 @@ public class RoomRestController {
     public void update(@RequestBody ResponseRoomDTO roomTo) {
 //        todo Check consistency and probably not found case
 //        Find out if I need to get id in the parameters
-        Room room = roomService.update(roomMapper.toEntity(roomTo));
+        if (roomTo == null) {
+            throw new NullRoomException();
+        }
+        roomService.update(roomMapper.toEntity(roomTo));
     }
 
     @DeleteMapping("/{id}")

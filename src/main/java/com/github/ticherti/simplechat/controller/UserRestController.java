@@ -24,6 +24,9 @@ public class UserRestController {
     public ResponseUserDTO create(@RequestBody SaveRequestUserDTO userTo) {
         User user = userService.save(userMapper.toEntity(userTo));
 //        todo Add not null check, probably in services
+        if (userTo == null) {
+            throw new NullUserException();
+        }
         return userMapper.toTO(user);
     }
 
@@ -44,6 +47,9 @@ public class UserRestController {
     public void update(@RequestBody ResponseUserDTO userTo) {
 //        todo Check consistency and probably not found case
 //        Find out if I need to get id in the parameters
+        if (userTo == null) {
+            throw new NullUserException();
+        }
         User user = userService.update(userMapper.toEntity(userTo));
     }
 

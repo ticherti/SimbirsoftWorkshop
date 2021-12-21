@@ -27,7 +27,9 @@ public class MessageRestController {
     public ResponseMessageDTO create(@RequestBody SaveRequestMessageDTO messageTo) {
         log.info("creating a message");
         Message message = messageService.save(messageMapper.toEntity(messageTo));
-//        todo Add not null check, probably in services
+        if (messageTo == null) {
+            throw new NullMessageException();
+        }
         return messageMapper.toTO(message);
     }
 
@@ -51,6 +53,9 @@ public class MessageRestController {
         log.info("updating message " + messageTo.getId());
 //        todo Check consistency and probably not found case
 //        Find out if I need to get id in the parameters for consistency check
+        if (messageTo == null) {
+            throw new NullMessageException();
+        }
         Message message = messageService.update(messageMapper.toEntity(messageTo));
     }
 
