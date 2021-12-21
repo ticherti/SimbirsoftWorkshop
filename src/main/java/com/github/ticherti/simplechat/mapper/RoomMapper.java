@@ -1,8 +1,8 @@
 package com.github.ticherti.simplechat.mapper;
 
 import com.github.ticherti.simplechat.entity.Room;
-import com.github.ticherti.simplechat.to.ResponseRoomTo;
-import com.github.ticherti.simplechat.to.SaveRequestRoomTo;
+import com.github.ticherti.simplechat.to.ResponseRoomDTO;
+import com.github.ticherti.simplechat.to.SaveRequestRoomDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -13,13 +13,13 @@ import java.util.List;
 public interface RoomMapper {
     RoomMapper roomMapper = Mappers.getMapper(RoomMapper.class);
 
-    Room toEntity(ResponseRoomTo responseRoomTo);
+    Room toEntity(ResponseRoomDTO responseRoomDTO);
 
-    Room toEntity(SaveRequestRoomTo requestRoomTo);
+    Room toEntity(SaveRequestRoomDTO requestRoomDTO);
 
-    ResponseRoomTo toTO(Room room);
+    ResponseRoomDTO toTO(Room room);
 
-    List<Room> allToEntities(Collection<ResponseRoomTo> roomTos);
+    List<Room> allToEntities(Collection<ResponseRoomDTO> roomDTOs);
 
-    List<ResponseRoomTo> allToTOs(Collection<Room> rooms);
+    List<ResponseRoomDTO> allToTOs(Collection<Room> rooms);
 }

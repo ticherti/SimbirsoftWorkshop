@@ -5,13 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class SaveRequestMessageTo {
+public class ResponseRoomDTO {
+    private long id;
+    private String name;
+    private ResponseUserDTO creator;
+    private List<ResponseUserDTO> users;
+    private boolean isPrivate;
 
-    private SaveRequestRoomTo room;
-    private SaveRequestUserTo user;
-    private String content;
 }
+
+

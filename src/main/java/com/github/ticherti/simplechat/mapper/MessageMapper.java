@@ -1,8 +1,8 @@
 package com.github.ticherti.simplechat.mapper;
 
 import com.github.ticherti.simplechat.entity.Message;
-import com.github.ticherti.simplechat.to.ResponseMessageTo;
-import com.github.ticherti.simplechat.to.SaveRequestMessageTo;
+import com.github.ticherti.simplechat.to.ResponseMessageDTO;
+import com.github.ticherti.simplechat.to.SaveRequestMessageDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -13,13 +13,13 @@ import java.util.List;
 public interface MessageMapper {
     MessageMapper messageMapper = Mappers.getMapper(MessageMapper.class);
 
-    Message toEntity(ResponseMessageTo responseMessageTo);
+    Message toEntity(ResponseMessageDTO responseMessageTo);
 
-    Message toEntity(SaveRequestMessageTo requestMessageTo);
+    Message toEntity(SaveRequestMessageDTO requestMessageTo);
 
-    ResponseMessageTo toTO(Message message);
+    ResponseMessageDTO toTO(Message message);
 
-    List<Message> allToEntities(Collection<ResponseMessageTo> messageTos);
+    List<Message> allToEntities(Collection<ResponseMessageDTO> messageTos);
 
-    List<ResponseMessageTo> allToTOs(Collection<Message> messages);
+    List<ResponseMessageDTO> allToTOs(Collection<Message> messages);
 }

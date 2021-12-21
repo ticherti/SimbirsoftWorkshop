@@ -9,10 +9,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SaveRequestRoomTo {
+public class SaveRequestRoomDTO {
 
     private String name;
-    private Long userId;
+    private SaveRequestUserDTO creator;
     private boolean isPrivate;
 }
 
