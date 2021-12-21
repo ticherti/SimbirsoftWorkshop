@@ -21,8 +21,7 @@ public class Room implements Serializable {
     @EqualsAndHashCode.Include
     private long id;
 
-    @Column(name = "name", nullable = false, unique = true)
-    @Size(min = 3, max = 20)
+    @Column(name = "name", nullable = false, unique = true, length = 20)
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)

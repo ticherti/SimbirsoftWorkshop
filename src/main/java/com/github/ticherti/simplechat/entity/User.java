@@ -22,12 +22,10 @@ public class User implements Serializable {
     @EqualsAndHashCode.Include
     private long id;
 
-    @Column(name = "login", unique = true, nullable = false)
-    @Size(min = 3, max = 30)
+    @Column(name = "login", unique = true, nullable = false, length = 30)
     private String login;
 
-    @Column(name = "password", nullable = false)
-    @Size(min = 6, max = 20)
+    @Column(name = "password", nullable = false, length = 20)
     private String password;
 
     @Column(name = "role", nullable = false)
