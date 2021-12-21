@@ -1,7 +1,6 @@
 package com.github.ticherti.simplechat.service;
 
 import com.github.ticherti.simplechat.entity.Role;
-import com.github.ticherti.simplechat.entity.Room;
 import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.exception.RoomNotFoundException;
 import com.github.ticherti.simplechat.exception.UserNotFoundException;
@@ -55,7 +54,7 @@ public class UserService {
     @Transactional
     public ResponseUserTo update(ResponseUserTo responseUserTo) {
 //        todo probably login should be changeable
-//        todo ONE
+//        todo Decide something with updation of users created rooms
         Optional<User> existedUser = userRepository.findById(responseUserTo.getId());
         long id = responseUserTo.getId();
         if (existedUser.isPresent()) {

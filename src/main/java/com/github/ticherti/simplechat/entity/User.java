@@ -1,6 +1,7 @@
 package com.github.ticherti.simplechat.entity;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -33,6 +34,7 @@ public class User implements Serializable {
 
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
+    @ColumnDefault(value = "USER")
     private Role role;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -48,7 +50,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 
-    @Column(name = "is_banned")
+    @Column(name = "is_banned", nullable = false, columnDefinition = "boolean default false")
     private boolean isBanned;
 
     @Column(name = "start_ban_time")
