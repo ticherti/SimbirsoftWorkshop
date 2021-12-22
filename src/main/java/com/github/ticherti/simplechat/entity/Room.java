@@ -32,8 +32,11 @@ public class Room implements Serializable {
     @Column(name = "is_private", nullable = false)
     private boolean isPrivate;
 
-    //    todo Find out the best way to deal with cascade type Remove
-    @ManyToMany(mappedBy = "rooms", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @ManyToMany(mappedBy = "rooms", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinTable(joinColumns = @JoinColumn(name = "room_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<User> users;
 
     // todo Find out if I should only leave Remove here
