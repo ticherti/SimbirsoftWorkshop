@@ -7,10 +7,13 @@ import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.repository.MessageRepository;
 import com.github.ticherti.simplechat.repository.RoomRepository;
 import com.github.ticherti.simplechat.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ import java.util.List;
 
 @SpringBootApplication
 public class SimpleChatApplication implements CommandLineRunner {
+    private static final Logger log = LoggerFactory.getLogger(SimpleChatApplication.class);
     UserRepository userRepository;
     MessageRepository messageRepository;
     RoomRepository roomRepository;
@@ -34,9 +38,14 @@ public class SimpleChatApplication implements CommandLineRunner {
         SpringApplication.run(SimpleChatApplication.class, args);
     }
 
-    @Transactional
     @Override
     public void run(String... args) throws Exception {
+        basicSave();
+//        saveUsers();
+    }
+
+    @Transactional
+    public void basicSave() {
         User user1 = new User();
         user1.setLogin("login test");
         user1.setPassword("password");
@@ -95,7 +104,17 @@ public class SimpleChatApplication implements CommandLineRunner {
         roomRepository.findAll().forEach(System.out::println);
         System.out.println("_______deleting________");
         System.out.println(userRepository.findById(1L));
-        userRepository.deleteById(1L);
+//        userRepository.deleteById(1L);
         System.out.println(userRepository.findById(1L));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveUsers() {
+
+        Room room = roomRepository.getById(3L);
+        User user = userRepository.findAll().stream().findFirst().get();
+        room.setUsers(Collections.singletonList(user));
+        roomRepository.save(room);
+        log.info("user is saved for the room");
     }
 }
