@@ -18,7 +18,7 @@ public class ResponseUserTo {
     private String password;
     private Role role;
     //    private List<ResponseRoomTo> rooms;
-    private boolean isBanned;
+    private boolean isActive;
     private Timestamp startBanTime;
     private Timestamp endBanTime;
 }

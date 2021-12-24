@@ -10,6 +10,7 @@ import com.github.ticherti.simplechat.to.ResponseUserTo;
 import com.github.ticherti.simplechat.to.SaveRequestUserTo;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +26,16 @@ public class UserService {
 
     private UserRepository userRepository;
     private UserMapper userMapper;
+    //    todo Check out if passwordEncoder is ok to be here
+    private PasswordEncoder passwordEncoder;
 
     @Transactional
     public ResponseUserTo save(SaveRequestUserTo requestUserTo) {
         log.info("Saving user");
         User user = userMapper.toEntity(requestUserTo);
         user.setRole(Role.USER);
+        user.setPassword(passwordEncoder.encode(requestUserTo.getPassword()));
+        user.setActive(true);
         return userMapper.toTO(userRepository.save(user));
     }
 

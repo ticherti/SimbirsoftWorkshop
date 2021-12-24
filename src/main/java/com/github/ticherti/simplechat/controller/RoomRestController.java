@@ -56,6 +56,8 @@ public class RoomRestController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+//    todo Check this out when I have more info about how to get users to manage their room
+//    @PreAuthorize("hasAuthority('users.write')")
     public void delete(@PathVariable long id) {
         log.info("deleting room " + id);
         roomService.delete(id);

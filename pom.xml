@@ -24,6 +24,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <mapstruck.version>1.4.2.Final</mapstruck.version>
         <mapstruck.lombock.version>0.2.0</mapstruck.lombock.version>
+        <jjwt.version>0.9.1</jjwt.version>
     </properties>
 
     <dependencies>
@@ -56,6 +57,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
         </dependency>
         <!-- Lombok -->
         <dependency>

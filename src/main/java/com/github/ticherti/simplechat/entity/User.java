@@ -28,7 +28,7 @@ public class User implements Serializable {
     private String login;
 
     @Column(name = "password", nullable = false)
-    @Size(min = 6, max = 20)
+    @Size(min = 6, max = 90)
     private String password;
 
     @Column(name = "role", nullable = false)
@@ -36,7 +36,7 @@ public class User implements Serializable {
     @ColumnDefault(value = "USER")
     private Role role;
 
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    //    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
 //    @JoinTable(name = "room_user",
 //            joinColumns = @JoinColumn(name = "user_id"),
@@ -47,12 +47,12 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE, orphanRemoval = false)
     private List<Room> createdRooms;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Message> messages;
 
-    @Column(name = "is_banned", nullable = false, columnDefinition = "boolean default false")
-    private boolean isBanned;
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
+    private boolean isActive;
 
     @Column(name = "start_ban_time")
     private Timestamp startBanTime;

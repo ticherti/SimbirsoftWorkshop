@@ -7,9 +7,12 @@ import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.repository.MessageRepository;
 import com.github.ticherti.simplechat.repository.RoomRepository;
 import com.github.ticherti.simplechat.repository.UserRepository;
+import com.github.ticherti.simplechat.service.MessageService;
+import com.github.ticherti.simplechat.service.RoomService;
+import com.github.ticherti.simplechat.service.UserService;
+import com.github.ticherti.simplechat.to.SaveRequestUserTo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,11 +30,19 @@ public class SimpleChatApplication implements CommandLineRunner {
     MessageRepository messageRepository;
     RoomRepository roomRepository;
 
-    @Autowired
-    public SimpleChatApplication(UserRepository userRepository, MessageRepository messageRepository, RoomRepository roomRepository) {
+    UserService userService;
+    MessageService messageService;
+    RoomService roomService;
+
+    public SimpleChatApplication(UserRepository userRepository, MessageRepository messageRepository,
+                                 RoomRepository roomRepository, UserService userService, MessageService messageService,
+                                 RoomService roomService) {
         this.userRepository = userRepository;
         this.messageRepository = messageRepository;
         this.roomRepository = roomRepository;
+        this.userService = userService;
+        this.messageService = messageService;
+        this.roomService = roomService;
     }
 
     public static void main(String[] args) {
@@ -47,13 +58,17 @@ public class SimpleChatApplication implements CommandLineRunner {
     @Transactional
     public void basicSave() {
         User user1 = new User();
-        user1.setLogin("login test");
-        user1.setPassword("password");
+        user1.setLogin("login");
+        user1.setPassword("$2a$12$UuhbNaOleqvVGc66J22l5eXVzazATWQGQfnnS2Dhsifx5b7Ox.7xG");
         user1.setRole(Role.MODERATOR);
+        user1.setActive(true);
         User user2 = new User();
         user2.setLogin("login2");
         user2.setPassword("password2");
         user2.setRole(Role.MODERATOR);
+        user2.setActive(true);
+        SaveRequestUserTo user3 = new SaveRequestUserTo("login3", "password3", Role.ADMINISTRATOR);
+
 
         Room room = new Room();
         room.setCreator(user1);
@@ -97,6 +112,8 @@ public class SimpleChatApplication implements CommandLineRunner {
         messageRepository.save(message1);
         messageRepository.save(message2);
         messageRepository.save(message3);
+
+        userService.save(user3);
 
 
         userRepository.findAll().forEach(System.out::println);
