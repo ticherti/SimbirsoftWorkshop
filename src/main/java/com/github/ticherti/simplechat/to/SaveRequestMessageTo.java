@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -12,6 +14,7 @@ import lombok.Setter;
 public class SaveRequestMessageTo {
 
     private Long roomId;
+    @NotNull
     private Long userId;
     private String content;
 }

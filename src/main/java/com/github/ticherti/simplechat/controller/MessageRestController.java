@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,13 +23,13 @@ public class MessageRestController {
     private MessageService messageService;
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseMessageTo create(@RequestBody SaveRequestMessageTo messageTo) {
+    public ResponseEntity<?> create(@RequestBody SaveRequestMessageTo messageTo) {
         log.info("creating a message");
 //        todo Extend entities from base abstract. Refactor messages classes, extract null checks.
         if (messageTo == null) {
             throw new NullMessageException();
         }
-        return messageService.save(messageTo);
+        return new ResponseEntity(messageService.save(messageTo), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")

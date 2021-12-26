@@ -58,7 +58,6 @@ public class SecurityUser implements UserDetails {
         return isActive;
     }
 
-//    todo Not sure if isBanned is right for the details
     public static UserDetails fromUser(User user) {
         return new org.springframework.security.core.userdetails.User(
                 user.getLogin(), user.getPassword(),
