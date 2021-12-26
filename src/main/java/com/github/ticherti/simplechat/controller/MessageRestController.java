@@ -4,9 +4,9 @@ import com.github.ticherti.simplechat.entity.Message;
 import com.github.ticherti.simplechat.service.MessageService;
 import com.github.ticherti.simplechat.to.ResponseMessageDTO;
 import com.github.ticherti.simplechat.to.SaveRequestMessageDTO;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -15,21 +15,18 @@ import java.util.List;
 
 import static com.github.ticherti.simplechat.mapper.MessageMapper.messageMapper;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "rest/messages", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MessageRestController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private MessageService messageService;
+    private final MessageService messageService;
 
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseMessageDTO create(@RequestBody SaveRequestMessageDTO messageTo) {
         log.info("creating a message");
         Message message = messageService.save(messageMapper.toEntity(messageTo));
-        if (messageTo == null) {
-            throw new NullMessageException();
-        }
         return messageMapper.toTO(message);
     }
 
@@ -40,22 +37,19 @@ public class MessageRestController {
         return messageMapper.toTO(messageService.read(id));
     }
 
-    @GetMapping("")
+    @GetMapping
     public List<ResponseMessageDTO> readAll() {
         log.info("Getting all messages");
 //        todo Check consistency somehow
         return messageMapper.allToTOs(messageService.readAll());
     }
 
-    @PutMapping("")
+    @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody ResponseMessageDTO messageTo) {
         log.info("updating message " + messageTo.getId());
 //        todo Check consistency and probably not found case
 //        Find out if I need to get id in the parameters for consistency check
-        if (messageTo == null) {
-            throw new NullMessageException();
-        }
         Message message = messageService.update(messageMapper.toEntity(messageTo));
     }
 
