@@ -10,7 +10,7 @@ import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.service.MessageService;
 import com.github.ticherti.simplechat.service.RoomService;
 import com.github.ticherti.simplechat.service.UserService;
-import com.github.ticherti.simplechat.to.SaveRequestUserTo;
+import com.github.ticherti.simplechat.to.SaveRequestUserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -67,7 +67,7 @@ public class SimpleChatApplication implements CommandLineRunner {
         user2.setPassword("password2");
         user2.setRole(Role.MODERATOR);
         user2.setActive(true);
-        SaveRequestUserTo user3 = new SaveRequestUserTo("login3", "password3", Role.ADMINISTRATOR);
+        SaveRequestUserDTO user3 = new SaveRequestUserDTO("login3", "password3", Role.ADMINISTRATOR);
 
 
         Room room = new Room();
@@ -116,13 +116,13 @@ public class SimpleChatApplication implements CommandLineRunner {
         userService.save(user3);
 
 
-        userRepository.findAll().forEach(System.out::println);
+//        userRepository.findAll().forEach(System.out::println);
         System.out.println("__________");
-        roomRepository.findAll().forEach(System.out::println);
-        System.out.println("_______deleting________");
-        System.out.println(userRepository.findById(1L));
-//        userRepository.deleteById(1L);
-        System.out.println(userRepository.findById(1L));
+//        roomRepository.findAll().forEach(System.out::println);
+//        System.out.println("_______deleting________");
+//        System.out.println(userRepository.findById(1L));
+////        userRepository.deleteById(1L);
+//        System.out.println(userRepository.findById(1L));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

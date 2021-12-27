@@ -1,8 +1,8 @@
 package com.github.ticherti.simplechat.mapper;
 
 import com.github.ticherti.simplechat.entity.Message;
-import com.github.ticherti.simplechat.to.ResponseMessageTo;
-import com.github.ticherti.simplechat.to.SaveRequestMessageTo;
+import com.github.ticherti.simplechat.to.ResponseMessageDTO;
+import com.github.ticherti.simplechat.to.SaveRequestMessageDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -19,12 +19,12 @@ public interface MessageMapper {
             @Mapping(target = "content", source = "content"),
             @Mapping(target = "creationDateTime", source = "creationDateTime")
     })
-    Message toEntity(ResponseMessageTo responseMessageTo);
+    Message toEntity(ResponseMessageDTO responseMessageTo);
 
     @Mappings({
             @Mapping(target = "content", source = "content")
     })
-    Message toEntity(SaveRequestMessageTo requestMessageTo);
+    Message toEntity(SaveRequestMessageDTO requestMessageTo);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
@@ -33,7 +33,7 @@ public interface MessageMapper {
             @Mapping(target = "content", source = "content"),
             @Mapping(target = "creationDateTime", source = "creationDateTime")
     })
-    ResponseMessageTo toTO(Message message);
+    ResponseMessageDTO toTO(Message message);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
@@ -42,5 +42,5 @@ public interface MessageMapper {
             @Mapping(target = "content", source = "content"),
             @Mapping(target = "creationDateTime", source = "creationDateTime")
     })
-    List<ResponseMessageTo> allToTOs(Collection<Message> messages);
+    List<ResponseMessageDTO> allToTOs(Collection<Message> messages);
 }

@@ -8,11 +8,10 @@ import com.github.ticherti.simplechat.mapper.MessageMapper;
 import com.github.ticherti.simplechat.repository.MessageRepository;
 import com.github.ticherti.simplechat.repository.RoomRepository;
 import com.github.ticherti.simplechat.repository.UserRepository;
-import com.github.ticherti.simplechat.to.ResponseMessageTo;
-import com.github.ticherti.simplechat.to.SaveRequestMessageTo;
+import com.github.ticherti.simplechat.to.ResponseMessageDTO;
+import com.github.ticherti.simplechat.to.SaveRequestMessageDTO;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +31,7 @@ public class MessageService {
     private MessageMapper messageMapper;
 
     @Transactional
-    public ResponseMessageTo save(SaveRequestMessageTo requestMessageTo) {
+    public ResponseMessageDTO save(SaveRequestMessageDTO requestMessageTo) {
         log.info("Saving message");
         Room room = roomRepository.getById(requestMessageTo.getRoomId());
         User user = userRepository.getById(requestMessageTo.getUserId());
@@ -43,12 +42,12 @@ public class MessageService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseMessageTo> readAll() {
+    public List<ResponseMessageDTO> readAll() {
         return messageMapper.allToTOs(messageRepository.findAll());
     }
 
     @Transactional(readOnly = true)
-    public ResponseMessageTo read(long id) {
+    public ResponseMessageDTO read(long id) {
 //        There is no privacy check here
         log.info("Reading message");
         Optional<Message> message = messageRepository.findById(id);
@@ -60,7 +59,7 @@ public class MessageService {
     }
 
     @Transactional
-    public ResponseMessageTo update(ResponseMessageTo responseMessageTo) {
+    public ResponseMessageDTO update(ResponseMessageDTO responseMessageTo) {
         Optional<Message> existedMessage = messageRepository.findById(responseMessageTo.getId());
         long id = responseMessageTo.getId();
         if (existedMessage.isPresent()) {

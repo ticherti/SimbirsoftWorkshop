@@ -2,14 +2,16 @@ package com.github.ticherti.simplechat.controller;
 
 import com.github.ticherti.simplechat.exception.NullUserException;
 import com.github.ticherti.simplechat.service.UserService;
-import com.github.ticherti.simplechat.to.ResponseUserTo;
-import com.github.ticherti.simplechat.to.SaveRequestUserTo;
+import com.github.ticherti.simplechat.to.ResponseUserDTO;
+import com.github.ticherti.simplechat.to.SaveRequestUserDTO;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -23,7 +25,7 @@ public class UserRestController {
     private UserService userService;
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseUserTo create(@RequestBody SaveRequestUserTo userTo) {
+    public ResponseUserDTO create(@Valid @RequestBody SaveRequestUserDTO userTo) {
         log.info("creating a user");
 //        todo Extend entities from base abstract. Refactor users classes, extract null checks.
         if (userTo == null) {
@@ -33,20 +35,20 @@ public class UserRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseUserTo read(@PathVariable long id) {
+    public ResponseUserDTO read(@NotNull @PathVariable long id) {
         log.info("Getting a user " + id);
         return userService.read(id);
     }
 
     @GetMapping("")
-    public List<ResponseUserTo> readAll() {
+    public List<ResponseUserDTO> readAll() {
         log.info("Getting all users");
         return userService.readAll();
     }
 
     @PutMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody ResponseUserTo userTo) {
+    public void update(@Valid @RequestBody ResponseUserDTO userTo) {
         log.info("Updating a user " + userTo.getId());
 //        todo Find out if I need to get id in the parameters for consistency  and security check
         if (userTo == null) {
@@ -57,7 +59,7 @@ public class UserRestController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable long id) {
+    public void delete(@NotNull @PathVariable long id) {
         log.info("deleting user " + id);
         userService.delete(id);
     }

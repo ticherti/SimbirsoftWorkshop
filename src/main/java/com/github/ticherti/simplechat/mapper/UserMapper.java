@@ -1,8 +1,8 @@
 package com.github.ticherti.simplechat.mapper;
 
 import com.github.ticherti.simplechat.entity.User;
-import com.github.ticherti.simplechat.to.ResponseUserTo;
-import com.github.ticherti.simplechat.to.SaveRequestUserTo;
+import com.github.ticherti.simplechat.to.ResponseUserDTO;
+import com.github.ticherti.simplechat.to.SaveRequestUserDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -21,14 +21,14 @@ public interface UserMapper {
             @Mapping(target = "startBanTime", source = "startBanTime"),
             @Mapping(target = "endBanTime", source = "endBanTime")
     })
-    User toEntity(ResponseUserTo responseUserTo);
+    User toEntity(ResponseUserDTO responseUserTo);
 
     @Mappings({
             @Mapping(target = "login", source = "login"),
             @Mapping(target = "password", source = "password"),
             @Mapping(target = "role", source = "role")
     })
-    User toEntity(SaveRequestUserTo requestUserTo);
+    User toEntity(SaveRequestUserDTO requestUserTo);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
@@ -39,7 +39,7 @@ public interface UserMapper {
             @Mapping(target = "startBanTime", source = "startBanTime"),
             @Mapping(target = "endBanTime", source = "endBanTime")
     })
-    ResponseUserTo toTO(User user);
+    ResponseUserDTO toTO(User user);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
@@ -50,5 +50,5 @@ public interface UserMapper {
             @Mapping(target = "startBanTime", source = "startBanTime"),
             @Mapping(target = "endBanTime", source = "endBanTime")
     })
-    List<ResponseUserTo> allToTOs(Collection<User> users);
+    List<ResponseUserDTO> allToTOs(Collection<User> users);
 }

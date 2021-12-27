@@ -6,8 +6,8 @@ import com.github.ticherti.simplechat.exception.RoomNotFoundException;
 import com.github.ticherti.simplechat.exception.UserNotFoundException;
 import com.github.ticherti.simplechat.mapper.UserMapper;
 import com.github.ticherti.simplechat.repository.UserRepository;
-import com.github.ticherti.simplechat.to.ResponseUserTo;
-import com.github.ticherti.simplechat.to.SaveRequestUserTo;
+import com.github.ticherti.simplechat.to.ResponseUserDTO;
+import com.github.ticherti.simplechat.to.SaveRequestUserDTO;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +30,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Transactional
-    public ResponseUserTo save(SaveRequestUserTo requestUserTo) {
+    public ResponseUserDTO save(SaveRequestUserDTO requestUserTo) {
         log.info("Saving user");
         User user = userMapper.toEntity(requestUserTo);
         user.setRole(Role.USER);
@@ -40,12 +40,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseUserTo> readAll() {
+    public List<ResponseUserDTO> readAll() {
         return userMapper.allToTOs(userRepository.findAll());
     }
 
     @Transactional(readOnly = true)
-    public ResponseUserTo read(long id) {
+    public ResponseUserDTO read(long id) {
 //        There is no privacy check here
         log.info("Reading user");
         Optional<User> user = userRepository.findById(id);
@@ -57,7 +57,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseUserTo update(ResponseUserTo responseUserTo) {
+    public ResponseUserDTO update(ResponseUserDTO responseUserTo) {
 //        todo probably login should be changeable
 //        todo Decide something with updation of users created rooms
         Optional<User> existedUser = userRepository.findById(responseUserTo.getId());

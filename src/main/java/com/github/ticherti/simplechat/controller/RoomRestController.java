@@ -2,14 +2,16 @@ package com.github.ticherti.simplechat.controller;
 
 import com.github.ticherti.simplechat.exception.NullRoomException;
 import com.github.ticherti.simplechat.service.RoomService;
-import com.github.ticherti.simplechat.to.ResponseRoomTo;
-import com.github.ticherti.simplechat.to.SaveRequestRoomTo;
+import com.github.ticherti.simplechat.to.ResponseRoomDTO;
+import com.github.ticherti.simplechat.to.SaveRequestRoomDTO;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -22,7 +24,7 @@ public class RoomRestController {
     private RoomService roomService;
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseRoomTo create(@RequestBody SaveRequestRoomTo roomTo) {
+    public ResponseRoomDTO create(@Valid @RequestBody SaveRequestRoomDTO roomTo) {
         log.info("creating a room");
 //        todo Extend entities from base abstract. Refactor rooms classes, extract null checks.
         if (roomTo == null) {
@@ -32,20 +34,20 @@ public class RoomRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseRoomTo read(@PathVariable long id) {
+    public ResponseRoomDTO read(@NotNull @PathVariable long id) {
         log.info("Getting a room " + id);
         return roomService.read(id);
     }
 
     @GetMapping("")
-    public List<ResponseRoomTo> readAll() {
+    public List<ResponseRoomDTO> readAll() {
         log.info("Getting all rooms");
         return roomService.readAll();
     }
 
     @PutMapping("")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody ResponseRoomTo roomTo) {
+    public void update(@Valid @RequestBody ResponseRoomDTO roomTo) {
         log.info("Updating a room " + roomTo.getId());
 //        todo Find out if I need to get id in the parameters for consistency  and security check
         if (roomTo == null) {
@@ -58,7 +60,7 @@ public class RoomRestController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
 //    todo Check this out when I have more info about how to get users to manage their room
 //    @PreAuthorize("hasAuthority('users.write')")
-    public void delete(@PathVariable long id) {
+    public void delete(@NotNull @PathVariable long id) {
         log.info("deleting room " + id);
         roomService.delete(id);
     }

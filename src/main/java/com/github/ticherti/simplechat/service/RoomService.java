@@ -6,10 +6,9 @@ import com.github.ticherti.simplechat.exception.RoomNotFoundException;
 import com.github.ticherti.simplechat.mapper.RoomMapper;
 import com.github.ticherti.simplechat.repository.RoomRepository;
 import com.github.ticherti.simplechat.repository.UserRepository;
-import com.github.ticherti.simplechat.to.ResponseRoomTo;
-import com.github.ticherti.simplechat.to.SaveRequestRoomTo;
+import com.github.ticherti.simplechat.to.ResponseRoomDTO;
+import com.github.ticherti.simplechat.to.SaveRequestRoomDTO;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +28,7 @@ public class RoomService {
     private RoomMapper roomMapper;
 
     @Transactional
-    public ResponseRoomTo save(SaveRequestRoomTo requestRoomTo) {
+    public ResponseRoomDTO save(SaveRequestRoomDTO requestRoomTo) {
 //        todo check user, throw some exceptions
         log.info("Saving room");
         User creator = userRepository.getById(requestRoomTo.getUserId());
@@ -39,12 +38,12 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseRoomTo> readAll() {
+    public List<ResponseRoomDTO> readAll() {
         return roomMapper.allToTOs(roomRepository.findAll());
     }
 
     @Transactional(readOnly = true)
-    public ResponseRoomTo read(long id) {
+    public ResponseRoomDTO read(long id) {
 //        There is no privacy check here
         log.info("Reading room");
         Optional<Room> room = roomRepository.findById(id);
@@ -56,7 +55,7 @@ public class RoomService {
     }
 
     @Transactional
-    public ResponseRoomTo update(ResponseRoomTo responseRoomTo) {
+    public ResponseRoomDTO update(ResponseRoomDTO responseRoomTo) {
 //        todo something with id here. Also authority question and private-don't-change one.
         Optional<Room> existedRoom = roomRepository.findById(responseRoomTo.getId());
         long id = responseRoomTo.getId();

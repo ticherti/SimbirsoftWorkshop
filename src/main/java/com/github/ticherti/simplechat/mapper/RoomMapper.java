@@ -1,8 +1,8 @@
 package com.github.ticherti.simplechat.mapper;
 
 import com.github.ticherti.simplechat.entity.Room;
-import com.github.ticherti.simplechat.to.ResponseRoomTo;
-import com.github.ticherti.simplechat.to.SaveRequestRoomTo;
+import com.github.ticherti.simplechat.to.ResponseRoomDTO;
+import com.github.ticherti.simplechat.to.SaveRequestRoomDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -19,13 +19,13 @@ public interface RoomMapper {
             @Mapping(target = "users", source = "users"),
             @Mapping(target = "private", source = "private")
     })
-    Room toEntity(ResponseRoomTo responseRoomTo);
+    Room toEntity(ResponseRoomDTO responseRoomTo);
 
     @Mappings({
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "private", source = "private")
     })
-    Room toEntity(SaveRequestRoomTo requestRoomTo);
+    Room toEntity(SaveRequestRoomDTO requestRoomTo);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
@@ -34,7 +34,7 @@ public interface RoomMapper {
             @Mapping(target = "users", source = "users"),
             @Mapping(target = "private", source = "private")
     })
-    ResponseRoomTo toTO(Room room);
+    ResponseRoomDTO toTO(Room room);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
@@ -43,5 +43,5 @@ public interface RoomMapper {
             @Mapping(target = "users", source = "users"),
             @Mapping(target = "isPrivate", source = "isPrivate")
     })
-    List<ResponseRoomTo> allToTOs(Collection<Room> rooms);
+    List<ResponseRoomDTO> allToTOs(Collection<Room> rooms);
 }
