@@ -2,27 +2,27 @@ package com.github.ticherti.simplechat.service;
 
 import com.github.ticherti.simplechat.entity.Role;
 import com.github.ticherti.simplechat.entity.User;
-import com.github.ticherti.simplechat.exception.RoomNotFoundException;
 import com.github.ticherti.simplechat.exception.UserNotFoundException;
 import com.github.ticherti.simplechat.mapper.UserMapper;
 import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.to.ResponseUserDTO;
 import com.github.ticherti.simplechat.to.SaveRequestUserDTO;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
+@Slf4j
 @Service
 @AllArgsConstructor
 public class UserService {
-    private static final Logger log = getLogger(UserService.class);
 
     private UserRepository userRepository;
     private UserMapper userMapper;
@@ -46,7 +46,6 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public ResponseUserDTO read(long id) {
-//        There is no privacy check here
         log.info("Reading user");
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
@@ -57,27 +56,36 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseUserDTO update(ResponseUserDTO responseUserTo) {
-//        todo probably login should be changeable
-//        todo Decide something with updation of users created rooms
-        Optional<User> existedUser = userRepository.findById(responseUserTo.getId());
-        long id = responseUserTo.getId();
-        if (existedUser.isPresent()) {
-            User user = userMapper.toEntity(responseUserTo);
-            user.setId(id);
-            return userMapper.toTO(userRepository.save(user));
-        } else {
-            throw new UserNotFoundException(id);
-        }
+    public ResponseUserDTO update(SaveRequestUserDTO userTO, User user) {
+//        todo no xss validation, not here nor in save()
+        log.info("Updating a user from TO");
+        user.setPassword(passwordEncoder.encode(userTO.getPassword()));
+        user.setLogin(userTO.getLogin());
+//        todo find out what's up with token after the password changing
+        return userMapper.toTO(userRepository.save(user));
     }
 
+    @Transactional
     public void delete(long id) {
 //        todo Should decide something to delete created rooms. Or change creator field in Room to nullable.
+//        Upd. check it now.
         log.info("Deleting user");
-        Optional<User> user = userRepository.findById(id);
-        if (!user.isPresent()) {
-            throw new RoomNotFoundException(id);
-        }
+        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         userRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void banned(long id, boolean banned, int minutes) {
+        log.info("Enabling {}", banned);
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        user.setActive(banned);
+        user.setEndBanTime(Timestamp.valueOf(LocalDateTime.now().plusMinutes(minutes)));
+    }
+
+    @Transactional
+    public void setModerator(long id, String role) {
+        log.info("Setting moderator");
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        user.setRole(Role.valueOf(role));
     }
 }

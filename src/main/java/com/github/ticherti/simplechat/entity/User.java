@@ -19,7 +19,7 @@ import java.util.List;
 @ToString(exclude = {"rooms", "messages", "createdRooms"})
 public class User implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private long id;
 

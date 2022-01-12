@@ -5,7 +5,7 @@ import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.security.JwtTokenProvider;
 import com.github.ticherti.simplechat.to.AuthenticationRequestDTO;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,12 +23,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
+@Slf4j
 @RestController
 @RequestMapping("/rest/auth")
 public class AuthenticationRestController {
-    private static final Logger log = getLogger(AuthenticationRestController.class);
 
     private final AuthenticationManager authenticationManager;
     private UserRepository userRepository;

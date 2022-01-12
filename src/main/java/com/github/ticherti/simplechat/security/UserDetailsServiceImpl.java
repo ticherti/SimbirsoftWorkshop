@@ -2,12 +2,15 @@ package com.github.ticherti.simplechat.security;
 
 import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+@Slf4j
 @Service("userDetailsServiceImpl")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -20,8 +23,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userRepository.findByLogin(login).orElseThrow(() ->
-                new UsernameNotFoundException("User doesn't exists"));
-        return SecurityUser.fromUser(user);
+        log.debug("Authenticating '{}'", login);
+        Optional<User> optionalUser = userRepository.findByLogin(login);
+        return new AuthUser(optionalUser.orElseThrow(
+                () -> new UsernameNotFoundException("User '" + login + "' was not found")));
     }
 }

@@ -1,5 +1,7 @@
 package com.github.ticherti.simplechat.to;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.ticherti.simplechat.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +25,7 @@ public class ResponseUserDTO {
     @Size(min = 3, max = 30)
     private String login;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "Password must from 6 to 20 characters")
     @Size(min = 6, max = 20)
     private String password;
@@ -30,7 +33,6 @@ public class ResponseUserDTO {
     @NotNull(message = "Role mustn't be null")
     private Role role;
 
-    //    private List<ResponseRoomTo> rooms;
     private boolean isActive;
     private Timestamp startBanTime;
     private Timestamp endBanTime;

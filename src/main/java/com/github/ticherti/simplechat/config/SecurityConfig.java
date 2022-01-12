@@ -2,6 +2,7 @@ package com.github.ticherti.simplechat.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,17 +30,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                    .authorizeRequests()
-                    .antMatchers("/").permitAll()
-                    .antMatchers("/rest/auth/login").permitAll()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/rest/profile").anonymous()
+                .antMatchers("/rest/auth/login").permitAll()
+//                .antMatchers("/api/**").authenticated()
+
 //                  .antMatchers(HttpMethod.GET, "")
 //                  .hasAnyRole(Role.USER.name())
 //                  .hasAuthority(Permission.USERS_READ.name())
 
-                    .anyRequest()
-                    .authenticated()
+                .anyRequest()
+                .authenticated()
                 .and()
-                    .apply(jwtConfigurer);
+                .apply(jwtConfigurer);
     }
 
     @Bean

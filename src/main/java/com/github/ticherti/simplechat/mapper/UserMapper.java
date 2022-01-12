@@ -25,8 +25,7 @@ public interface UserMapper {
 
     @Mappings({
             @Mapping(target = "login", source = "login"),
-            @Mapping(target = "password", source = "password"),
-            @Mapping(target = "role", source = "role")
+            @Mapping(target = "password", source = "password")
     })
     User toEntity(SaveRequestUserDTO requestUserTo);
 

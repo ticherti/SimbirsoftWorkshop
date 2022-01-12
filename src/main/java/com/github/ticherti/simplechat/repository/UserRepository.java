@@ -12,10 +12,4 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByLogin(String login);
-
-//
-//    @Modifying
-//    @Transactional
-//    @Query(value = "DELETE FROM Messages m WHERE m.user_id=?1; DELETE FROM Users u WHERE u.id=?1", nativeQuery = true)
-//    int delete(long id);
 }
