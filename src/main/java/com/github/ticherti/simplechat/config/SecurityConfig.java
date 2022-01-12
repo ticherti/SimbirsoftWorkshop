@@ -1,5 +1,6 @@
 package com.github.ticherti.simplechat.config;
 
+import com.github.ticherti.simplechat.entity.Permission;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -33,6 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/rest/profile").anonymous()
                 .antMatchers("/rest/auth/login").permitAll()
+                .antMatchers(HttpMethod.PATCH, "rest/admin/users/{id}/ban").hasAuthority(Permission.BAN_USER.name())
+                .antMatchers(HttpMethod.PATCH, "rest/admin/users/{id}/moderator").hasAuthority(Permission.MAKE_MODERATOR.name())
+
+//                todo add permissions only for authorized
 //                .antMatchers("/api/**").authenticated()
 
 //                  .antMatchers(HttpMethod.GET, "")

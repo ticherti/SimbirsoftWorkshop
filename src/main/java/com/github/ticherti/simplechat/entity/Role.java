@@ -6,9 +6,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum Role {
-    USER(Set.of(Permission.USERS_READ)),
-    MODERATOR(Set.of(Permission.USERS_READ, Permission.USERS_WRITE)),
-    ADMINISTRATOR(Set.of(Permission.USERS_READ, Permission.USERS_WRITE));
+    ADMINISTRATOR(Set.of( Permission.RENAME_USER, Permission.MAKE_MODERATOR,
+            Permission.BAN_USER, Permission.DELETE_MESSAGE,
+            Permission.SEND_MESSAGE, Permission.CREATE_ROOM,
+            Permission.CONNECT_USER, Permission.DISCONNECT_USER,
+            Permission.RENAME_ROOM, Permission.DELETE_ROOM)),
+
+    MODERATOR(Set.of(Permission.BAN_USER, Permission.DELETE_MESSAGE,
+            Permission.SEND_MESSAGE, Permission.CREATE_ROOM,
+            Permission.CONNECT_USER, Permission.DISCONNECT_USER,
+            Permission.RENAME_ROOM, Permission.DELETE_ROOM)),
+
+    USER(Set.of(Permission.SEND_MESSAGE, Permission.CREATE_ROOM,
+            Permission.CONNECT_USER, Permission.DISCONNECT_USER,
+            Permission.RENAME_ROOM, Permission.DELETE_ROOM));
 
     private final Set<Permission> permissions;
 
