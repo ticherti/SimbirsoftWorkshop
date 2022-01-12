@@ -36,14 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/rest/auth/login").permitAll()
                 .antMatchers(HttpMethod.PATCH, "rest/admin/users/{id}/ban").hasAuthority(Permission.BAN_USER.name())
                 .antMatchers(HttpMethod.PATCH, "rest/admin/users/{id}/moderator").hasAuthority(Permission.MAKE_MODERATOR.name())
-
-//                todo add permissions only for authorized
-//                .antMatchers("/api/**").authenticated()
-
-//                  .antMatchers(HttpMethod.GET, "")
-//                  .hasAnyRole(Role.USER.name())
-//                  .hasAuthority(Permission.USERS_READ.name())
-
+                .antMatchers(HttpMethod.DELETE, "rest/messages").hasAuthority(Permission.DELETE_MESSAGE.name())
+                .antMatchers(HttpMethod.PUT, "rest/messages").denyAll()
+                .antMatchers("/rest/**").authenticated()
                 .anyRequest()
                 .authenticated()
                 .and()

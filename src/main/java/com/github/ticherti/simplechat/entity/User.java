@@ -36,15 +36,11 @@ public class User implements Serializable {
     @ColumnDefault(value = "USER")
     private Role role;
 
-    //    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-//    @JoinTable(name = "room_user",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "room_id")
-//    )
+//todo hard place here
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<Room> rooms;
 
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE, orphanRemoval = false)
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
     private List<Room> createdRooms;
 
     //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

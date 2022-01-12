@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 @ToString(exclude = {"room", "user"})
 public class Message implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private long id;
 

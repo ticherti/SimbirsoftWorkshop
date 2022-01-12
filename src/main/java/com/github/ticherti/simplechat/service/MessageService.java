@@ -4,6 +4,7 @@ import com.github.ticherti.simplechat.entity.Message;
 import com.github.ticherti.simplechat.entity.Room;
 import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.exception.MessageNotFoundException;
+import com.github.ticherti.simplechat.exception.NotPermittedException;
 import com.github.ticherti.simplechat.mapper.MessageMapper;
 import com.github.ticherti.simplechat.repository.MessageRepository;
 import com.github.ticherti.simplechat.repository.RoomRepository;
@@ -31,10 +32,12 @@ public class MessageService {
     private MessageMapper messageMapper;
 
     @Transactional
-    public ResponseMessageDTO save(SaveRequestMessageDTO requestMessageTo) {
+    public ResponseMessageDTO save(SaveRequestMessageDTO requestMessageTo, User user) {
         log.info("Saving message");
+        if (!user.isActive()){
+            throw new NotPermittedException("You are banned");
+        }
         Room room = roomRepository.getById(requestMessageTo.getRoomId());
-        User user = userRepository.getById(requestMessageTo.getUserId());
         Message message = messageMapper.toEntity(requestMessageTo);
         message.setRoom(room);
         message.setUser(user);

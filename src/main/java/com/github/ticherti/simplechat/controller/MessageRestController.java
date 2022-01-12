@@ -1,38 +1,34 @@
 package com.github.ticherti.simplechat.controller;
 
-import com.github.ticherti.simplechat.exception.NullMessageException;
+import com.github.ticherti.simplechat.security.AuthUser;
 import com.github.ticherti.simplechat.service.MessageService;
 import com.github.ticherti.simplechat.to.ResponseMessageDTO;
 import com.github.ticherti.simplechat.to.SaveRequestMessageDTO;
-import lombok.NoArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "rest/messages", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MessageRestController {
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private MessageService messageService;
 
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> create(@Valid @RequestBody SaveRequestMessageDTO messageTo) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> create(@Valid @RequestBody SaveRequestMessageDTO messageTo,
+                                    @AuthenticationPrincipal AuthUser currentUser) {
         log.info("creating a message");
-//        todo Extend entities from base abstract. Refactor messages classes, extract null checks.
-        if (messageTo == null) {
-            throw new NullMessageException();
-        }
-        return new ResponseEntity(messageService.save(messageTo), HttpStatus.CREATED);
+        return new ResponseEntity(messageService.save(messageTo, currentUser.getUser()), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -41,20 +37,17 @@ public class MessageRestController {
         return messageService.read(id);
     }
 
-    @GetMapping("")
+    @GetMapping
     public List<ResponseMessageDTO> readAll() {
         log.info("Getting all messages");
         return messageService.readAll();
     }
 
-    @PutMapping("")
+    @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody ResponseMessageDTO messageTo) {
+//    todo Need to add newly added id in service check's. Look for bunnies
+    public void update(@Valid @RequestBody ResponseMessageDTO messageTo, @PathVariable Long id) {
         log.info("Updating a message " + messageTo.getId());
-//        todo Find out if I need to get id in the parameters for consistency  and security check
-        if (messageTo == null) {
-            throw new NullMessageException();
-        }
         messageService.update(messageTo);
     }
 
