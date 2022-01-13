@@ -4,20 +4,19 @@ import com.github.ticherti.simplechat.entity.Message;
 import com.github.ticherti.simplechat.entity.Room;
 import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.exception.MessageNotFoundException;
-import com.github.ticherti.simplechat.exception.NotPermittedException;
 import com.github.ticherti.simplechat.mapper.MessageMapper;
 import com.github.ticherti.simplechat.repository.MessageRepository;
 import com.github.ticherti.simplechat.repository.RoomRepository;
 import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.to.ResponseMessageDTO;
 import com.github.ticherti.simplechat.to.SaveRequestMessageDTO;
+import com.github.ticherti.simplechat.util.UserUtil;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -28,15 +27,12 @@ public class MessageService {
 
     private MessageRepository messageRepository;
     private RoomRepository roomRepository;
-    private UserRepository userRepository;
     private MessageMapper messageMapper;
 
     @Transactional
     public ResponseMessageDTO save(SaveRequestMessageDTO requestMessageTo, User user) {
         log.info("Saving message");
-        if (!user.isActive()){
-            throw new NotPermittedException("You are banned");
-        }
+        UserUtil.ckeckBan(user);
         Room room = roomRepository.getById(requestMessageTo.getRoomId());
         Message message = messageMapper.toEntity(requestMessageTo);
         message.setRoom(room);
@@ -53,25 +49,17 @@ public class MessageService {
     public ResponseMessageDTO read(long id) {
 //        There is no privacy check here
         log.info("Reading message");
-        Optional<Message> message = messageRepository.findById(id);
-        if (message.isPresent()) {
-            return messageMapper.toTO(message.get());
-        } else {
-            throw new MessageNotFoundException(id);
-        }
+        return messageMapper.toTO(messageRepository.findById(id).orElseThrow(() -> new MessageNotFoundException(id)));
     }
 
     @Transactional
     public ResponseMessageDTO update(ResponseMessageDTO responseMessageTo) {
-        Optional<Message> existedMessage = messageRepository.findById(responseMessageTo.getId());
         long id = responseMessageTo.getId();
-        if (existedMessage.isPresent()) {
-            Message message = messageMapper.toEntity(responseMessageTo);
-            message.setId(id);
-            return messageMapper.toTO(messageRepository.save(message));
-        } else {
-            throw new MessageNotFoundException(id);
-        }
+        messageRepository.findById(id).orElseThrow(() -> new MessageNotFoundException(id));
+
+        Message message = messageMapper.toEntity(responseMessageTo);
+        message.setId(id);
+        return messageMapper.toTO(messageRepository.save(message));
     }
 
     public void delete(long id) {

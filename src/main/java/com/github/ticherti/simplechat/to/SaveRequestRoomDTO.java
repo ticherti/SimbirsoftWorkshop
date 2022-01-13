@@ -18,9 +18,6 @@ public class SaveRequestRoomDTO {
     @Size(min = 3, max = 20)
     private String name;
 
-    @NotNull(message = "Room mustn't be null")
-    private Long userId;
-
     @NotNull(message = "Private boolean field mustn't be null")
     private boolean isPrivate;
 }

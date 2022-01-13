@@ -17,7 +17,7 @@ import java.util.List;
 @ToString(exclude = {"creator", "users", "messages"})
 public class Room implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private long id;
 
@@ -33,14 +33,13 @@ public class Room implements Serializable {
     private boolean isPrivate;
 
 //    @ManyToMany(mappedBy = "rooms", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = @JoinColumn(name = "room_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> users;
 
-    // todo Find out if I should only leave Remove here
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "room", cascade = CascadeType.REMOVE)
     private List<Message> messages;
 }
 

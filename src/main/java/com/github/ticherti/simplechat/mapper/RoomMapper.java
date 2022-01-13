@@ -28,7 +28,7 @@ public interface RoomMapper {
     Room toEntity(SaveRequestRoomDTO requestRoomTo);
 
     @Mappings({
-            @Mapping(target = "id", source = "id"),
+//            @Mapping(target = "id", source = "id"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "userId", source = "creator.id"),
             @Mapping(target = "users", source = "users"),

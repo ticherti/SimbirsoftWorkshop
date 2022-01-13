@@ -2,13 +2,13 @@ package com.github.ticherti.simplechat.service;
 
 import com.github.ticherti.simplechat.entity.Role;
 import com.github.ticherti.simplechat.entity.User;
-import com.github.ticherti.simplechat.exception.NotPermittedException;
 import com.github.ticherti.simplechat.exception.UserNotFoundException;
 import com.github.ticherti.simplechat.mapper.UserMapper;
 import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.security.AuthUser;
 import com.github.ticherti.simplechat.to.ResponseUserDTO;
 import com.github.ticherti.simplechat.to.SaveRequestUserDTO;
+import com.github.ticherti.simplechat.util.UserUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -49,12 +48,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public ResponseUserDTO read(long id) {
         log.info("Reading user");
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            return userMapper.toTO(user.get());
-        } else {
-            throw new UserNotFoundException(id);
-        }
+        return userMapper.toTO(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
     }
 
     @Transactional
@@ -69,8 +63,6 @@ public class UserService {
 
     @Transactional
     public void delete(long id) {
-//        todo Should decide something to delete created rooms. Or change creator field in Room to nullable.
-//        Upd. check it now.
         log.info("Deleting user");
         userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         userRepository.deleteById(id);
@@ -79,10 +71,7 @@ public class UserService {
     @Transactional
     public void ban(long id, boolean banned, int minutes, @AuthenticationPrincipal AuthUser currentUser) {
         log.info("Enabling {}", banned);
-//        todo timing point should be done here
-        if (!currentUser.getUser().isActive()) {
-            throw new NotPermittedException("You are banned");
-        }
+        UserUtil.ckeckBan(currentUser.getUser());
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         user.setActive(banned);
         user.setEndBanTime(Timestamp.valueOf(LocalDateTime.now().plusMinutes(minutes)));
@@ -94,6 +83,5 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         user.setRole(Role.valueOf(role));
     }
-//    todo add private ban check here. Or not here
 //    todo Authentication getPrincipal problem
 }
