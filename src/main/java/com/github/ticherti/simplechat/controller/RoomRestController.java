@@ -68,8 +68,8 @@ public class RoomRestController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@NotNull @PathVariable long id) {
+    public void delete(@NotNull @PathVariable long id, @AuthenticationPrincipal AuthUser user) {
         log.info("deleting room " + id);
-        roomService.delete(id);
+        roomService.delete(id, user.getUser());
     }
 }

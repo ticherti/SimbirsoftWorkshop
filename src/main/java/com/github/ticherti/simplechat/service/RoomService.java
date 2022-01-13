@@ -90,9 +90,10 @@ public class RoomService {
     }
 
     @Transactional
-    public void delete(long id) {
+    public void delete(long id, User user) {
         log.info("Deleting room");
-        roomRepository.findById(id).orElseThrow(() -> new RoomNotFoundException(id));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new RoomNotFoundException(id));
+        checkCreatorAndPermission(user, room);
         roomRepository.deleteById(id);
     }
 }
