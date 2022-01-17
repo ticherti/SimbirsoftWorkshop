@@ -18,7 +18,6 @@ public interface UserMapper {
             @Mapping(target = "password", source = "password"),
             @Mapping(target = "role", source = "role"),
             @Mapping(target = "active", source = "active"),
-            @Mapping(target = "startBanTime", source = "startBanTime"),
             @Mapping(target = "endBanTime", source = "endBanTime")
     })
     User toEntity(ResponseUserDTO responseUserTo);
@@ -35,7 +34,6 @@ public interface UserMapper {
             @Mapping(target = "password", source = "password"),
             @Mapping(target = "role", source = "role"),
             @Mapping(target = "active", source = "active"),
-            @Mapping(target = "startBanTime", source = "startBanTime"),
             @Mapping(target = "endBanTime", source = "endBanTime")
     })
     ResponseUserDTO toTO(User user);
@@ -46,7 +44,6 @@ public interface UserMapper {
             @Mapping(target = "password", source = "password"),
             @Mapping(target = "role", source = "role"),
             @Mapping(target = "isBanned", source = "isBanned"),
-            @Mapping(target = "startBanTime", source = "startBanTime"),
             @Mapping(target = "endBanTime", source = "endBanTime")
     })
     List<ResponseUserDTO> allToTOs(Collection<User> users);

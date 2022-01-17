@@ -25,4 +25,10 @@ public class UserUtil {
             throw new NotPermittedException("Not permitted to do so");
         }
     }
+
+    public static void checkEnteredUser(Integer i){
+        if (i == null){
+            throw new NotPermittedException("Not permitted to do so");
+        }
+    }
 }

@@ -37,7 +37,7 @@ public class Message implements Serializable {
     @Size(max = 1000)
     private String content;
 
-    @Column(name = "date_time")
+    @Column(name = "date_time", columnDefinition = "timestamp default now()")
     @CreationTimestamp
     private Timestamp creationDateTime;
 }

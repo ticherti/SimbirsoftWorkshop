@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
@@ -14,4 +16,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Transactional
     @Query("DELETE FROM Message m WHERE m.id=:id")
     int delete(long id);
+
+    @Transactional
+    @Query("SELECT m FROM Message m WHERE m.room.id=:roomId")
+    List<Message> findAllByRoom(long roomId);
 }

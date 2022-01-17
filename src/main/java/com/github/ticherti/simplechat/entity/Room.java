@@ -32,7 +32,6 @@ public class Room implements Serializable {
     @Column(name = "is_private", nullable = false)
     private boolean isPrivate;
 
-//    @ManyToMany(mappedBy = "rooms", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = @JoinColumn(name = "room_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")

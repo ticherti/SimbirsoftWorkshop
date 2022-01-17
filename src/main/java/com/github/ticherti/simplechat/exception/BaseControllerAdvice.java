@@ -23,6 +23,11 @@ public class BaseControllerAdvice {
         return response(HttpStatus.NOT_FOUND, ex);
     }
 
+
+    @ExceptionHandler({NotPermittedException.class})
+    public ResponseEntity notPermitted(NotPermittedException ex) {
+        return response(HttpStatus.FORBIDDEN, ex);
+    }
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity methodArgumentNotValid(MethodArgumentNotValidException ex) {
         return response(HttpStatus.BAD_REQUEST, ex);

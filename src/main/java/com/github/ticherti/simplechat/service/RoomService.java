@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.ticherti.simplechat.util.UserUtil.checkCreatorAndPermission;
@@ -37,6 +38,7 @@ public class RoomService {
         ckeckBan(user);
         Room room = roomMapper.toEntity(requestRoomTo);
         room.setCreator(user);
+        room.setUsers(Collections.singletonList(user));
         return roomMapper.toTO(roomRepository.save(room));
     }
 
@@ -86,7 +88,6 @@ public class RoomService {
             throw new NotPermittedException("No such user in the room");
         }
         users.remove(removedUser);
-        room.setUsers(users);
     }
 
     @Transactional

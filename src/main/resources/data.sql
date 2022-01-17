@@ -4,8 +4,8 @@ VALUES ('login', '$2a$12$UuhbNaOleqvVGc66J22l5eXVzazATWQGQfnnS2Dhsifx5b7Ox.7xG',
        ('login3', '$2a$12$YrLwsgf2uUN60ufyxwjsluQ9OoU69yqkeN9tXCRpXAOPNzZtUrPlS', 'USER');
 
 INSERT INTO rooms (is_private, name, creator_id)
-VALUES ('false', 'Room1', 2),
-       ('false', 'Room2', 1);
+VALUES ('false', 'Room1', 1),
+       ('false', 'Room2', 2);
 
 INSERT INTO messages (content, room_id, user_id)
 VALUES ('Hey, you', 1, 1),
@@ -18,4 +18,5 @@ VALUES ('Hey, you', 1, 1),
 INSERT INTO rooms_users (room_id, user_id)
 VALUES (2, 1),
        (2, 2),
+       (1, 3),
        (1, 1);

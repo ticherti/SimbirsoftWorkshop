@@ -18,9 +18,9 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "rest/messages", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "rest/rooms/{roomId}/messages", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MessageRestController {
-
+    //todo check room id usage in methods
     @Autowired
     private MessageService messageService;
 
@@ -32,15 +32,17 @@ public class MessageRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseMessageDTO read(@NotNull @PathVariable long id) {
+    public ResponseMessageDTO read(@NotNull @PathVariable long id, @NotNull @PathVariable long roomId,
+                                   @AuthenticationPrincipal AuthUser user) {
         log.info("Getting a message " + id);
-        return messageService.read(id);
+        return messageService.read(id, roomId, user.getUser());
     }
 
     @GetMapping
-    public List<ResponseMessageDTO> readAll() {
+    public List<ResponseMessageDTO> readAll(@NotNull @PathVariable long roomId,
+                                            @AuthenticationPrincipal AuthUser currentUser) {
         log.info("Getting all messages");
-        return messageService.readAll();
+        return messageService.readAll(roomId, currentUser.getUser());
     }
 
     @PutMapping

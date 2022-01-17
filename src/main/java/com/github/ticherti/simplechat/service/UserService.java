@@ -27,7 +27,6 @@ public class UserService {
 
     private UserRepository userRepository;
     private UserMapper userMapper;
-    //    todo Check out if passwordEncoder is ok to be here
     private PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -37,6 +36,7 @@ public class UserService {
         user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(requestUserTo.getPassword()));
         user.setActive(true);
+        user.setEndBanTime(Timestamp.valueOf(LocalDateTime.now()));
         return userMapper.toTO(userRepository.save(user));
     }
 
@@ -57,24 +57,27 @@ public class UserService {
         log.info("Updating a user from TO");
         user.setPassword(passwordEncoder.encode(userTO.getPassword()));
         user.setLogin(userTO.getLogin());
-//        todo find out what's up with token after the password changing
         return userMapper.toTO(userRepository.save(user));
     }
 
     @Transactional
     public void delete(long id) {
         log.info("Deleting user");
-        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        User deletedUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        deletedUser.getRooms().forEach(room -> room.getUsers().remove(deletedUser));
+        log.info("Deleting user after cleaning rooms");
         userRepository.deleteById(id);
     }
 
     @Transactional
-    public void ban(long id, boolean banned, int minutes, @AuthenticationPrincipal AuthUser currentUser) {
-        log.info("Enabling {}", banned);
+    public void ban(long id, boolean isActive, Integer minutes, @AuthenticationPrincipal AuthUser currentUser) {
+        log.info("Enabling {}", isActive);
         UserUtil.ckeckBan(currentUser.getUser());
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        user.setActive(banned);
-        user.setEndBanTime(Timestamp.valueOf(LocalDateTime.now().plusMinutes(minutes)));
+        user.setActive(isActive);
+        user.setEndBanTime(Timestamp.valueOf(minutes == null ?
+                LocalDateTime.of(9999, 01, 01, 00, 00) :
+                LocalDateTime.now().plusMinutes(minutes)));
     }
 
     @Transactional

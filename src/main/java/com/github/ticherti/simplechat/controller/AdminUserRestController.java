@@ -22,10 +22,10 @@ public class AdminUserRestController {
 
     @PatchMapping("/{id}/ban")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void ban(@PathVariable long id, @RequestParam boolean isBanned, @Nullable @RequestParam int minutes,
+    public void ban(@PathVariable long id, @RequestParam boolean isActive, @Nullable @RequestParam Integer minutes,
                     @AuthenticationPrincipal AuthUser currentUser) {
-        log.info(isBanned ? "enable {}" : "disable {}", id);
-        userService.ban(id, isBanned, minutes, currentUser);
+        log.info(isActive ? "enable {}" : "disable {}", id);
+        userService.ban(id, isActive, minutes, currentUser);
     }
 
     @PatchMapping("/{id}/moderator")

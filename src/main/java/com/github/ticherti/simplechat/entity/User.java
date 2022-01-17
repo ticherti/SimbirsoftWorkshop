@@ -36,23 +36,18 @@ public class User implements Serializable {
     @ColumnDefault(value = "USER")
     private Role role;
 
-//todo hard place here
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<Room> rooms;
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
     private List<Room> createdRooms;
 
-    //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Message> messages;
 
     @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
-    @Column(name = "start_ban_time")
-    private Timestamp startBanTime;
-
-    @Column(name = "end_ban_time")
+    @Column(name = "end_ban_time",  columnDefinition = "TIMESTAMP DEFAULT NOW()")
     private Timestamp endBanTime;
 }

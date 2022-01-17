@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +29,8 @@ public class RoomRestController {
         log.info("creating a room");
         return roomService.save(roomTo, user.getUser());
     }
-//todo some thin point here. Not sure how to implement it now
+
+    //todo some thin point here. Not sure how to implement it now
     @GetMapping("/{id}")
     public ResponseRoomDTO read(@NotNull @PathVariable long id) {
         log.info("Getting a room " + id);
@@ -38,7 +38,6 @@ public class RoomRestController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('users.write')")
     public List<ResponseRoomDTO> readAll() {
         log.info("Getting all rooms");
         return roomService.readAll();
@@ -58,10 +57,11 @@ public class RoomRestController {
         log.info("Inviting into a room " + roomId);
         roomService.addUser(roomId, userId, user.getUser());
     }
+
     @PutMapping("/exit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeUser(@RequestParam long roomId, @RequestParam long userId,
-                        @AuthenticationPrincipal AuthUser user) {
+                           @AuthenticationPrincipal AuthUser user) {
         log.info("Inviting into a room " + roomId);
         roomService.removeUser(roomId, userId, user.getUser());
     }

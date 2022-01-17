@@ -4,10 +4,10 @@ import com.github.ticherti.simplechat.entity.Message;
 import com.github.ticherti.simplechat.entity.Room;
 import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.exception.MessageNotFoundException;
+import com.github.ticherti.simplechat.exception.RoomNotFoundException;
 import com.github.ticherti.simplechat.mapper.MessageMapper;
 import com.github.ticherti.simplechat.repository.MessageRepository;
 import com.github.ticherti.simplechat.repository.RoomRepository;
-import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.to.ResponseMessageDTO;
 import com.github.ticherti.simplechat.to.SaveRequestMessageDTO;
 import com.github.ticherti.simplechat.util.UserUtil;
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.github.ticherti.simplechat.util.UserUtil.checkEnteredUser;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -30,25 +31,28 @@ public class MessageService {
     private MessageMapper messageMapper;
 
     @Transactional
-    public ResponseMessageDTO save(SaveRequestMessageDTO requestMessageTo, User user) {
+    public ResponseMessageDTO save(SaveRequestMessageDTO requestMessageTo, User currentUser) {
         log.info("Saving message");
-        UserUtil.ckeckBan(user);
-        Room room = roomRepository.getById(requestMessageTo.getRoomId());
+        UserUtil.ckeckBan(currentUser);
+        long roomId = requestMessageTo.getRoomId();
+        Room room = roomRepository.findById(roomId).orElseThrow(()-> new RoomNotFoundException(roomId));
+        checkEnteredUser(roomRepository.checkUserInRoom(currentUser.getId(), roomId));
         Message message = messageMapper.toEntity(requestMessageTo);
         message.setRoom(room);
-        message.setUser(user);
+        message.setUser(currentUser);
         return messageMapper.toTO(messageRepository.save(message));
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseMessageDTO> readAll() {
-        return messageMapper.allToTOs(messageRepository.findAll());
+    public List<ResponseMessageDTO> readAll(long roomId, User currentUser) {
+        checkEnteredUser(roomRepository.checkUserInRoom(currentUser.getId(), roomId));
+        return messageMapper.allToTOs(messageRepository.findAllByRoom(roomId));
     }
 
     @Transactional(readOnly = true)
-    public ResponseMessageDTO read(long id) {
-//        There is no privacy check here
+    public ResponseMessageDTO read(long id, long roomId, User currentUser) {
         log.info("Reading message");
+        checkEnteredUser(roomRepository.checkUserInRoom(currentUser.getId(), roomId));
         return messageMapper.toTO(messageRepository.findById(id).orElseThrow(() -> new MessageNotFoundException(id)));
     }
 
