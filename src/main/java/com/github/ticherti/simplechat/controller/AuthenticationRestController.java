@@ -5,6 +5,7 @@ import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.security.JwtTokenProvider;
 import com.github.ticherti.simplechat.to.AuthenticationRequestDTO;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,18 +26,13 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 @RequestMapping("/rest/auth")
 public class AuthenticationRestController {
 
     private final AuthenticationManager authenticationManager;
     private UserRepository userRepository;
     private JwtTokenProvider jwtTokenProvider;
-
-    public AuthenticationRestController(AuthenticationManager authenticationManager, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDTO request) {

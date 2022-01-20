@@ -5,13 +5,10 @@ import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.exception.UserNotFoundException;
 import com.github.ticherti.simplechat.mapper.UserMapper;
 import com.github.ticherti.simplechat.repository.UserRepository;
-import com.github.ticherti.simplechat.security.AuthUser;
 import com.github.ticherti.simplechat.to.ResponseUserDTO;
 import com.github.ticherti.simplechat.to.SaveRequestUserDTO;
-import com.github.ticherti.simplechat.util.UserUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,9 +67,8 @@ public class UserService {
     }
 
     @Transactional
-    public void ban(long id, boolean isActive, Integer minutes, @AuthenticationPrincipal AuthUser currentUser) {
+    public void ban(long id, boolean isActive, Integer minutes) {
         log.info("Enabling {}", isActive);
-        UserUtil.ckeckBan(currentUser.getUser());
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         user.setActive(isActive);
         user.setEndBanTime(Timestamp.valueOf(minutes == null ?

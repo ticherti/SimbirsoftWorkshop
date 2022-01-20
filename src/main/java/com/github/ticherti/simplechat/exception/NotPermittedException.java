@@ -1,6 +1,8 @@
 package com.github.ticherti.simplechat.exception;
 
-public class NotPermittedException extends RuntimeException{
+import org.springframework.security.access.AccessDeniedException;
+
+public class NotPermittedException extends AccessDeniedException {
     public NotPermittedException(String message) {
         super(message);
     }

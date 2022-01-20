@@ -4,10 +4,11 @@ import com.github.ticherti.simplechat.security.AuthUser;
 import com.github.ticherti.simplechat.service.RoomService;
 import com.github.ticherti.simplechat.to.ResponseRoomDTO;
 import com.github.ticherti.simplechat.to.SaveRequestRoomDTO;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,13 +16,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
+@Slf4j
 @RestController
+@AllArgsConstructor
 @RequestMapping(value = "rest/rooms", produces = MediaType.APPLICATION_JSON_VALUE)
+@PreAuthorize("principal.enabled==true")
 public class RoomRestController {
-    private static final Logger log = getLogger(RoomRestController.class);
-    @Autowired
+
     private RoomService roomService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -30,7 +31,6 @@ public class RoomRestController {
         return roomService.save(roomTo, user.getUser());
     }
 
-    //todo some thin point here. Not sure how to implement it now
     @GetMapping("/{id}")
     public ResponseRoomDTO read(@NotNull @PathVariable long id) {
         log.info("Getting a room " + id);

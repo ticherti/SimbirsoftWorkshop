@@ -10,21 +10,19 @@ import com.github.ticherti.simplechat.repository.MessageRepository;
 import com.github.ticherti.simplechat.repository.RoomRepository;
 import com.github.ticherti.simplechat.to.ResponseMessageDTO;
 import com.github.ticherti.simplechat.to.SaveRequestMessageDTO;
-import com.github.ticherti.simplechat.util.UserUtil;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.github.ticherti.simplechat.util.UserUtil.checkEnteredUser;
-import static org.slf4j.LoggerFactory.getLogger;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class MessageService {
-    private static final Logger log = getLogger(MessageService.class);
 
     private MessageRepository messageRepository;
     private RoomRepository roomRepository;
@@ -33,9 +31,8 @@ public class MessageService {
     @Transactional
     public ResponseMessageDTO save(SaveRequestMessageDTO requestMessageTo, User currentUser) {
         log.info("Saving message");
-        UserUtil.ckeckBan(currentUser);
         long roomId = requestMessageTo.getRoomId();
-        Room room = roomRepository.findById(roomId).orElseThrow(()-> new RoomNotFoundException(roomId));
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new RoomNotFoundException(roomId));
         checkEnteredUser(roomRepository.checkUserInRoom(currentUser.getId(), roomId));
         Message message = messageMapper.toEntity(requestMessageTo);
         message.setRoom(room);

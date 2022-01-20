@@ -10,7 +10,6 @@ import com.github.ticherti.simplechat.repository.RoomRepository;
 import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.to.ResponseRoomDTO;
 import com.github.ticherti.simplechat.to.SaveRequestRoomDTO;
-import com.github.ticherti.simplechat.util.UserUtil;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.github.ticherti.simplechat.util.UserUtil.checkCreatorAndPermission;
-import static com.github.ticherti.simplechat.util.UserUtil.ckeckBan;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -35,7 +33,6 @@ public class RoomService {
     @Transactional
     public ResponseRoomDTO save(SaveRequestRoomDTO requestRoomTo, User user) {
         log.info("Saving room");
-        ckeckBan(user);
         Room room = roomMapper.toEntity(requestRoomTo);
         room.setCreator(user);
         room.setUsers(Collections.singletonList(user));
@@ -68,14 +65,13 @@ public class RoomService {
     public void addUser(long roomId, long userId, User user) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new RoomNotFoundException(roomId));
         List<User> users = room.getUsers();
-        ckeckBan(user);
         if (room.isPrivate() && users.size() >= 2) {
             checkCreatorAndPermission(user, room);
             throw new NotPermittedException("The room is not permitted to have more than two persons");
         }
         User addedUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-       users.add(addedUser);
-       room.setUsers(users);
+        users.add(addedUser);
+        room.setUsers(users);
     }
 
     @Transactional

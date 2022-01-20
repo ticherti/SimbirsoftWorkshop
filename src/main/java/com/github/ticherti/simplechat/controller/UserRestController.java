@@ -4,8 +4,8 @@ import com.github.ticherti.simplechat.security.AuthUser;
 import com.github.ticherti.simplechat.service.UserService;
 import com.github.ticherti.simplechat.to.ResponseUserDTO;
 import com.github.ticherti.simplechat.to.SaveRequestUserDTO;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,10 +17,10 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 @RequestMapping(value = "rest/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserRestController {
 
-    @Autowired
     private UserService userService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
