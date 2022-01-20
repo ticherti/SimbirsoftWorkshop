@@ -43,4 +43,6 @@ public interface MessageMapper {
             @Mapping(target = "creationDateTime", source = "creationDateTime")
     })
     List<ResponseMessageDTO> allToTOs(Collection<Message> messages);
+
+    ResponseMessageDTO saveToResponse(SaveRequestMessageDTO saveRequestMessageDTO);
 }

@@ -39,8 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "rest/{roomId}/messages").hasAuthority(Permission.DELETE_MESSAGE.name())
                 .antMatchers(HttpMethod.PUT, "/rest/{roomId}/messages").denyAll()
                 .antMatchers("/rest/**").authenticated()
-                .anyRequest()
-                .authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .apply(jwtConfigurer);
     }

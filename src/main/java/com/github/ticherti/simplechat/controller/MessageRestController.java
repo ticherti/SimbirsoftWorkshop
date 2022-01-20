@@ -30,7 +30,7 @@ public class MessageRestController {
     public ResponseEntity<?> create(@Valid @RequestBody SaveRequestMessageDTO messageTo,
                                     @AuthenticationPrincipal AuthUser currentUser) {
         log.info("creating a message");
-        return new ResponseEntity(messageService.save(messageTo, currentUser.getUser()), HttpStatus.CREATED);
+        return new ResponseEntity(messageService.processMessage(messageTo, currentUser.getUser()), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
