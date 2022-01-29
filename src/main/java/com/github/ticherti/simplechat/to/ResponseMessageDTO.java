@@ -19,7 +19,7 @@ public class ResponseMessageDTO {
     private long id;
 
     @NotNull(message = "Room mustn't be null")
-    private ResponseRoomDTO room;
+    private long roomId;
 
     @NotNull(message = "User mustn't be null")
     private ResponseUserDTO user;

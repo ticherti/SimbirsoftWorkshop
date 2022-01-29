@@ -22,15 +22,14 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping(value = "rest/rooms/{roomId}/messages", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MessageRestController {
-    //todo check room id usage in methods
     private MessageService messageService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("principal.enabled==true")
     public ResponseEntity<?> create(@Valid @RequestBody SaveRequestMessageDTO messageTo,
-                                    @AuthenticationPrincipal AuthUser currentUser) {
+                                    @AuthenticationPrincipal AuthUser currentUser, @NotNull @PathVariable long roomId) {
         log.info("creating a message");
-        return new ResponseEntity(messageService.processMessage(messageTo, currentUser.getUser()), HttpStatus.CREATED);
+        return new ResponseEntity(messageService.processMessage(messageTo, currentUser.getUser(), roomId), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -49,7 +48,6 @@ public class MessageRestController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-//    todo Need to add newly added id in service check's. Look for bunnies.
     public void update(@Valid @RequestBody ResponseMessageDTO messageTo) {
         log.info("Updating a message " + messageTo.getId());
         messageService.update(messageTo);

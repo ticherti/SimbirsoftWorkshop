@@ -14,8 +14,6 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class SaveRequestMessageDTO {
-    @NotNull(message = "Room mustn't be null")
-    private Long roomId;
 
     @NotBlank(message = "Text must be less than 1000 characters")
     @Size(max = 1000)
