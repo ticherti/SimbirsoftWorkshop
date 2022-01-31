@@ -12,13 +12,13 @@ import com.github.ticherti.simplechat.repository.UserRepository;
 import com.github.ticherti.simplechat.to.ResponseRoomDTO;
 import com.github.ticherti.simplechat.to.SaveRequestRoomDTO;
 import lombok.AllArgsConstructor;
-import org.mortbay.util.SingletonList;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static com.github.ticherti.simplechat.util.UserUtil.checkCreatorAndPermission;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -37,7 +37,7 @@ public class RoomService {
         log.info("Saving room");
         Room room = roomMapper.toEntity(requestRoomTo);
         room.setCreator(user);
-        room.setUsers(Collections.singletonList(user));
+        room.setUsers(Collections.singleton(user));
         return roomMapper.toTO(roomRepository.save(room));
     }
 
@@ -66,7 +66,7 @@ public class RoomService {
     @Transactional
     public void addUser(long roomId, long userId, User user) {
         Room room = find(roomId);
-        List<User> users = room.getUsers();
+        Set<User> users = room.getUsers();
         if (room.isPrivate() && users.size() >= 2) {
             throw new NotPermittedException("The room is not permitted to have more than two persons");
         }
@@ -79,7 +79,7 @@ public class RoomService {
     @Transactional
     public void addUser(String roomName, String login, User user) {
         Room room = find(roomName);
-        List<User> users = room.getUsers();
+        Set<User> users = room.getUsers();
         if (room.isPrivate() && users.size() >= 2) {
             throw new NotPermittedException("The room is not permitted to have more than two persons");
         }
@@ -95,7 +95,7 @@ public class RoomService {
         if (user.getId() != userId) {
             checkCreatorAndPermission(user, room, Permission.DISCONNECT_USER);
         }
-        List<User> users = room.getUsers();
+        Set<User> users = room.getUsers();
         User removedUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         if (!users.contains(user)) {
             throw new NotPermittedException("No such user in the room");
@@ -109,7 +109,7 @@ public class RoomService {
         if (user.getLogin() != login) {
             checkCreatorAndPermission(user, room, Permission.DISCONNECT_USER);
         }
-        List<User> users = room.getUsers();
+        Set<User> users = room.getUsers();
         User removedUser = userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
         if (!users.contains(user)) {
             throw new NotPermittedException("No such user in the room");
@@ -119,7 +119,7 @@ public class RoomService {
 
     @Transactional
     public void removeUserFromAll(String login, User user) {
-        if (user.getRole().getPermissions().contains(Permission.DISCONNECT_USER)){
+        if (user.getRole().getPermissions().contains(Permission.DISCONNECT_USER)) {
             User removedUser = userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
             removedUser.getRooms().forEach(r -> r.getUsers().remove(removedUser));
         }
