@@ -47,7 +47,7 @@ public class RoomRestController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void rename(@Valid @RequestBody ResponseRoomDTO roomTo, @AuthenticationPrincipal AuthUser user) {
         log.info("Updating a room " + roomTo.getId());
-        roomService.rename(roomTo, user.getUser());
+        roomService.renameById(roomTo, user.getUser());
     }
 
     @PutMapping("/enter")
@@ -70,6 +70,6 @@ public class RoomRestController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@NotNull @PathVariable long id, @AuthenticationPrincipal AuthUser user) {
         log.info("deleting room " + id);
-        roomService.delete(id, user.getUser());
+        roomService.deleteById(id, user.getUser());
     }
 }

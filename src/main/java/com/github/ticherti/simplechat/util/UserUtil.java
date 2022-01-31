@@ -7,8 +7,8 @@ import com.github.ticherti.simplechat.exception.NotPermittedException;
 
 public class UserUtil {
 
-    public static void checkCreatorAndPermission(User user, Room room){
-        if (room.getCreator().getId() != user.getId() && !user.getRole().getPermissions().contains(Permission.RENAME_ROOM)){
+    public static void checkCreatorAndPermission(User user, Room room, Permission permission){
+        if (room.getCreator().getId() != user.getId() && !user.getRole().getPermissions().contains(permission)){
             throw new NotPermittedException("Not permitted to do so");
         }
     }

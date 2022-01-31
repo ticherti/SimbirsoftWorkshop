@@ -6,4 +6,7 @@ public class UserNotFoundException extends AbstractNotFoundException {
     public UserNotFoundException(Long id) {
         super(MESSAGE, id);
     }
+    public UserNotFoundException(String login) {
+        super(MESSAGE, login);
+    }
 }

@@ -6,4 +6,7 @@ public class RoomNotFoundException extends AbstractNotFoundException {
     public RoomNotFoundException(Long id) {
         super(MESSAGE, id);
     }
+    public RoomNotFoundException(String name) {
+        super(MESSAGE, name);
+    }
 }

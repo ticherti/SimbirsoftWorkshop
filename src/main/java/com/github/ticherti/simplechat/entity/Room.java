@@ -1,5 +1,6 @@
 package com.github.ticherti.simplechat.entity;
 
+import com.github.ticherti.simplechat.security.AuthUser;
 import lombok.*;
 
 import javax.persistence.*;
@@ -40,6 +41,12 @@ public class Room implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "room", cascade = CascadeType.REMOVE)
     private List<Message> messages;
+
+    public Room(String name, User creator, boolean isPrivate) {
+        this.name = name;
+        this.creator = creator;
+        this.isPrivate = isPrivate;
+    }
 }
 
 

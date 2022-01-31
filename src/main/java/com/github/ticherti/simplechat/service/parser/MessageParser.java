@@ -1,24 +1,168 @@
 package com.github.ticherti.simplechat.service.parser;
 
+import com.github.ticherti.simplechat.entity.Permission;
+import com.github.ticherti.simplechat.entity.Role;
+import com.github.ticherti.simplechat.entity.User;
 import com.github.ticherti.simplechat.entity.Videos;
+import com.github.ticherti.simplechat.exception.NotPermittedException;
+import com.github.ticherti.simplechat.exception.ParseException;
+import com.github.ticherti.simplechat.security.AuthUser;
+import com.github.ticherti.simplechat.service.RoomService;
+import com.github.ticherti.simplechat.service.UserService;
+import com.github.ticherti.simplechat.to.SaveRequestMessageDTO;
+import com.github.ticherti.simplechat.to.SaveRequestRoomDTO;
 import com.github.ticherti.simplechat.util.SearchVideoYoutube;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Component
 @AllArgsConstructor
 public class MessageParser {
 
-    private SearchVideoYoutube searchVideoYoutube;
+    private static final String SPLIT_PATTERN = "\\s+";
+    private static final String HELP = """
+            Команды
+            Комнаты:
+            1 . //room create {Название комнаты} - создает комнаты;
+            -c закрытая комната. Только (владелец, модератор и админ) может
+            добавлять/удалять пользователей из комнаты.
+            2. //room remove {Название комнаты} - удаляет комнату (владелец и админ);
+            3. //room rename {Название комнаты} - переименование комнаты (владелец и
+            админ);
+            4. //room connect {Название комнаты} - войти в комнату;
+            -l {login пользователя} - добавить пользователя в комнату
+            5. //room disconnect - выйти из текущей комнаты;
+            Пользователи:
+            1 . //user rename {login пользователя} (владелец и админ);
+            2. //user ban;
+            -l {login пользователя} - выгоняет пользователя из всех комнат
+            -m {Количество минут} - время на которое пользователь не сможет войти.
+            3. //user moderator {login пользователя} - действия над модераторами.
+            -n - назначить пользователя модератором.
+            -d - “разжаловать” пользователя.
+            Боты:
+            1 . //yBot find -k -l {название канала}||{название видео} - в ответ бот присылает
+            ссылку на ролик;
+            -v - выводит количество текущих просмотров.
+            -l - выводит количество лайков под видео.
+            2. //yBot help - список доступных команд для взаимодействия.
+            Другие:
+            1 . //help - выводит список доступных команд.""";
 
-    public String botAction(String text) {
+    private SearchVideoYoutube searchVideoYoutube;
+    private UserService userService;
+    private RoomService roomService;
+
+    public void parseMessage(SaveRequestMessageDTO chatMessage) {
+        String text = chatMessage.getContent();
+
+        String[] words = text.trim().split(SPLIT_PATTERN);
+
+        if (text.startsWith("//room")) {
+            chatMessage.setContent(roomAction(words));
+        } else if (text.startsWith("//user")) {
+            chatMessage.setContent(userAction(words));
+        } else if (text.startsWith("//yBot")) {
+            chatMessage.setContent(youtubeAction(text));
+        } else if (text.startsWith("//help") || text.startsWith("//yBot help")) {
+            chatMessage.setContent(HELP);
+        } else {
+            log.info("Wrong bot command {}", text);
+            chatMessage.setContent("Wrong bot command - " + text);
+        }
+    }
+
+    private String roomAction(String[] words) {
+        if (words.length < 3) {
+            throw new ParseException();
+        }
+        switch (words[1]) {
+            case "create" -> {
+                return parseRoomCreate(words);
+            }
+            case "remove" -> {
+                return parseRoomRemove(words);
+            }
+            case "rename" -> {
+                return parseRoomRename(words);
+            }
+            case "connect" -> {
+                return parseRoomConnect(words);
+            }
+            case "disconnect" -> {
+                return parseRoomDisconnect(words);
+            }
+            default -> {
+                throw new ParseException();
+            }
+        }
+    }
+
+    private String parseRoomCreate(String[] words) {
+        boolean isPrivate = (words.length >= 4 && words[3].equals("-c")) ? true : false;
+        roomService.save(new SaveRequestRoomDTO(words[2], isPrivate), getAuthUser().getUser());
+        return "Room is successfully created.";
+    }
+
+    private String parseRoomRemove(String[] words) {
+        roomService.deleteByName(words[2], getAuthUser().getUser());
+        return "Room is successfully deleted.";
+    }
+
+    private String parseRoomRename(String[] words) {
+        checkLength(words.length, 4);
+        roomService.renameByName(words[2], words[3], getAuthUser().getUser());
+        return "Room is successfully renamed.";
+    }
+
+    private String parseRoomConnect(String[] words) {
+        User user = getAuthUser().getUser();
+        String login = (words.length >= 5 && words[3].equals("-l")) ? words[4] : user.getLogin();
+        roomService.addUser(words[2], login, user);
+        return "User entered";
+    }
+
+    private String parseRoomDisconnect(String[] words) {
+        User user = getAuthUser().getUser();
+        String login = (words.length >= 5 && words[3].equals("-l")) ? words[4] : user.getLogin();
+        roomService.removeUser(words[2], login, user);
+        return "User left";
+    }
+
+    private String userAction(String[] words) {
+        if (words.length < 3) {
+            throw new ParseException();
+        }
+        switch (words[1]) {
+            case "rename" -> {
+                return parseUserRename(words);
+            }
+            case "ban" -> {
+                return parseUserBan(words);
+            }
+            case "moderator" -> {
+                return parseUserModerator(words);
+            }
+            default -> {
+                throw new ParseException();
+            }
+        }
+    }
+
+    private String youtubeAction(String text) {
         final String SPLIT_PATTERN_FIND = "//yBot find|(\\|\\|)|-l|-v";
         int likes, view;
         String movieName;
@@ -83,10 +227,69 @@ public class MessageParser {
             message.append("Use the command '//help'. Error command to find movie - ").append(text);
         }
         videoList.clear();
-//        if (message.length() > 0) {
-//            return message.toString();
-//        }
-
         return message.toString();
+    }
+
+    private String parseUserRename(String[] words) {
+        checkLength(words.length, 4);
+        AuthUser currentUser = getAuthUser();
+        String name = words[2];
+        if (!name.equals(currentUser.getUsername()) &&
+                !currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Permission.RENAME_USER.getPermission()))) {
+            throw new NotPermittedException("Not authorized to rename this user");
+        }
+        String newName = words[3];
+        userService.rename(name, newName);
+        return "User renamed " + newName;
+    }
+
+    @Secured({"ADMINISTRATOR", "MODERATOR"})
+    private String parseUserBan(String[] words) {
+        Integer minutes = null;
+        OptionalInt indexOpt = IntStream.range(0, words.length)
+                .filter(i -> "-m".equals(words[i]))
+                .findFirst();
+        if (indexOpt.isPresent()) {
+            try {
+                minutes = Integer.parseInt(words[indexOpt.getAsInt() + 1]);
+            } catch (NumberFormatException e) {
+                throw new ParseException();
+            }
+        }
+       if (Arrays.stream(words).anyMatch(s -> s.equals("-l"))){
+           roomService.removeUserFromAll(words[2], getAuthUser().getUser());
+       }
+
+        userService.banByLogin(words[2], minutes);
+        return "User's banned";
+    }
+
+    @Secured({"ADMINISTRATOR"})
+    private String parseUserModerator(String[] words) {
+        checkLength(words.length, 4);
+        String login = words[2];
+        switch (words[3]) {
+            case "-n" -> {
+                userService.setModerator(login, Role.MODERATOR.name());
+                return "Moderator set";
+            }
+            case "-d" -> {
+                userService.setModerator(login, Role.USER.name());
+                return "Moderator demote";
+            }
+            default -> {
+                throw new ParseException();
+            }
+        }
+    }
+
+    private AuthUser getAuthUser() {
+        return (AuthUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    private void checkLength(int length, int needed) {
+        if (length < needed) {
+            throw new ParseException();
+        }
     }
 }

@@ -44,5 +44,5 @@ public interface MessageMapper {
     })
     List<ResponseMessageDTO> allToTOs(Collection<Message> messages);
 
-    ResponseMessageDTO saveToResponse(SaveRequestMessageDTO saveRequestMessageDTO);
+    ResponseMessageDTO requestToResponce(SaveRequestMessageDTO saveRequestMessageDTO);
 }

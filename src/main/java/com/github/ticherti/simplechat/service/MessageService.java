@@ -3,17 +3,13 @@ package com.github.ticherti.simplechat.service;
 import com.github.ticherti.simplechat.entity.Message;
 import com.github.ticherti.simplechat.entity.Room;
 import com.github.ticherti.simplechat.entity.User;
-import com.github.ticherti.simplechat.entity.Videos;
 import com.github.ticherti.simplechat.exception.MessageNotFoundException;
-import com.github.ticherti.simplechat.exception.RoomNotFoundException;
 import com.github.ticherti.simplechat.mapper.MessageMapper;
 import com.github.ticherti.simplechat.repository.MessageRepository;
 import com.github.ticherti.simplechat.repository.RoomRepository;
 import com.github.ticherti.simplechat.service.parser.MessageParser;
 import com.github.ticherti.simplechat.to.ResponseMessageDTO;
 import com.github.ticherti.simplechat.to.SaveRequestMessageDTO;
-import com.github.ticherti.simplechat.util.SearchVideoYoutube;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -78,27 +74,10 @@ public class MessageService {
 
     public ResponseMessageDTO processMessage(SaveRequestMessageDTO messageDTO, User user, long roomId) {
         if (roomId == BOT_ROOM_ID) {
-            chatBot(messageDTO);
-            return messageMapper.saveToResponse(messageDTO);
+            messageParser.parseMessage(messageDTO);
+            return messageMapper.requestToResponce(messageDTO);
         } else {
             return save(messageDTO, user, roomId);
         }
     }
-
-    //    todo check help commands here
-    private void chatBot(SaveRequestMessageDTO chatMessage) {
-        String text = chatMessage.getContent();
-//        if (text.startsWith("//room")) {
-//            botRoomAction(chatMessage);
-//        } else if (text.startsWith("//user")) {
-//            botUserAction(chatMessage);
-//        } else if (text.startsWith("//yBot") || text.startsWith("//help")) {
-//            botAction(chatMessage);
-//        } else {
-//            log.info("Wrong bot command {}", text);
-//            chatMessage.setContent("Wrong bot command - " + text);
-//        }
-        chatMessage.setContent(messageParser.botAction(text));
-    }
-
 }

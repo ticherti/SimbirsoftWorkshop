@@ -58,6 +58,14 @@ public class UserService {
     }
 
     @Transactional
+    public ResponseUserDTO rename(String userName, String newUserName) {
+        log.info("Updating a user from TO");
+        User user = userRepository.findByLogin(userName).orElseThrow(()-> new UserNotFoundException(userName));
+        user.setLogin(newUserName);
+        return userMapper.toTO(user);
+    }
+
+    @Transactional
     public void delete(long id) {
         log.info("Deleting user");
         User deletedUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
@@ -67,13 +75,18 @@ public class UserService {
     }
 
     @Transactional
-    public void ban(long id, boolean isActive, Integer minutes) {
+    public void banById(long id, boolean isActive, Integer minutes) {
         log.info("Enabling {}", isActive);
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        user.setActive(isActive);
-        user.setEndBanTime(Timestamp.valueOf(minutes == null ?
-                LocalDateTime.of(9999, 01, 01, 00, 00) :
-                LocalDateTime.now().plusMinutes(minutes)));
+        banById(user, isActive, minutes);
+
+    }
+
+    @Transactional
+    public void banByLogin(String login, Integer minutes) {
+        log.info("Banning by login {}", login);
+        User user = userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
+        banById(user, false, minutes);
     }
 
     @Transactional
@@ -81,6 +94,19 @@ public class UserService {
         log.info("Setting moderator");
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         user.setRole(Role.valueOf(role));
+    }
+    @Transactional
+    public void setModerator(String login, String role) {
+        log.info("Setting moderator");
+        User user = userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
+        user.setRole(Role.valueOf(role));
+    }
+
+    private void banById(User user, boolean isActive, Integer minutes){
+        user.setActive(isActive);
+        user.setEndBanTime(Timestamp.valueOf(minutes == null ?
+                LocalDateTime.of(9999, 01, 01, 00, 00) :
+                LocalDateTime.now().plusMinutes(minutes)));
     }
 //    todo Authentication getPrincipal problem
 }
