@@ -21,10 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -163,6 +160,10 @@ public class MessageParser {
     }
 
     private String youtubeAction(String text) {
+        return text.contains("find") ? parseYoutubeFind(text) : parseYoutubeVideoComment(text);
+    }
+
+    private String parseYoutubeFind(String text) {
         final String SPLIT_PATTERN_FIND = "//yBot find|(\\|\\|)|-l|-v";
         int likes, view;
         String movieName;
@@ -170,6 +171,7 @@ public class MessageParser {
         String channelId;
         StringBuffer message;
         List<Videos> videoList = new ArrayList<>();
+
         String[] splitCommands = text.split(SPLIT_PATTERN_FIND);
 
         likes = text.lastIndexOf("-l");
@@ -230,6 +232,59 @@ public class MessageParser {
         return message.toString();
     }
 
+    private String parseYoutubeVideoComment(String text) {
+//        vidoCommentRanom {имя канала}||{Название ролика} - Среди
+//        комментариев к ролику рандомно выбирается 1 - Первым сообщением бот
+//        выводит login человека, который оставил этот комментарий - Вторым
+//        сообщением бот выводит сам комментарий
+
+        final String SPLIT_PATTERN_FIND = "//yBot videoCommentRandom|(\\|\\|)";
+        String movieName;
+        String channelName;
+        String channelId;
+        StringBuffer message;
+        List<Videos> videoList = new ArrayList<>();
+
+        String[] splitCommands = text.split(SPLIT_PATTERN_FIND);
+
+        movieName = splitCommands[2].trim();
+        channelName = splitCommands[1].trim();
+
+        message = new StringBuffer();
+        try {
+            if (!channelName.isEmpty()) {
+                channelId = searchVideoYoutube.getChannelId(channelName);
+            } else {
+                channelId = "";
+            }
+
+            videoList = searchVideoYoutube.getVideoList(movieName, channelId, Long.valueOf(1), false);
+
+            if (videoList.size() == 0) {
+                return message.append(text).append("  not found. Use the command '//help'").toString();
+            }
+
+            for (Videos videos : videoList) {
+                Map<String, String> comments = searchVideoYoutube.getNameAndCommentMap(videos, 1);
+                for (Map.Entry<String, String> entry : comments.entrySet()) {
+                    message.append(entry.getKey()+ " : "+ entry.getValue()+ "\n");
+                }
+            }
+        } catch (GoogleJsonResponseException ex) {
+            log.error("GoogleJsonResponseException code: " + ex.getDetails().getCode() + " : "
+                    + ex.getDetails().getMessage());
+            message.append("Use the command '//help'. Error command to find movie - ").append(text);
+        } catch (IOException ex) {
+            log.error("IOException: " + ex.getMessage());
+            message.append("Use the command '//help'. Error command to find movie - ").append(text);
+        } catch (Throwable ex) {
+            log.error("Throwable: " + ex.getMessage());
+            message.append("Use the command '//help'. Error command to find movie - ").append(text);
+        }
+        videoList.clear();
+        return message.toString();
+    }
+
     private String parseUserRename(String[] words) {
         checkLength(words.length, 4);
         AuthUser currentUser = getAuthUser();
@@ -256,9 +311,9 @@ public class MessageParser {
                 throw new ParseException();
             }
         }
-       if (Arrays.stream(words).anyMatch(s -> s.equals("-l"))){
-           roomService.removeUserFromAll(words[2], getAuthUser().getUser());
-       }
+        if (Arrays.stream(words).anyMatch(s -> s.equals("-l"))) {
+            roomService.removeUserFromAll(words[2], getAuthUser().getUser());
+        }
 
         userService.banByLogin(words[2], minutes);
         return "User's banned";

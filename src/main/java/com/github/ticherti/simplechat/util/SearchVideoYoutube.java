@@ -8,10 +8,7 @@ import com.google.api.services.youtube.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class SearchVideoYoutube {
@@ -48,6 +45,19 @@ public class SearchVideoYoutube {
             }
         }
         return channelId;
+    }
+
+    public Map<String, String> getNameAndCommentMap(Videos video, int resultCount) throws Throwable {
+        YouTube.CommentThreads.List commentsList = youTube.commentThreads().list("snippet");
+        int maxResults = 100;
+        CommentThreadListResponse videoCommentListResponse = commentsList.setKey(apikey).setVideoId(video.getId())
+                .setMaxResults((long) maxResults).setTextFormat("plainText").execute();
+        List<CommentThread> videoComments = videoCommentListResponse.getItems();
+
+        int random = new Random().nextInt(maxResults);
+        CommentSnippet snippet = videoComments.get(random).getSnippet().getTopLevelComment().getSnippet();
+
+        return Collections.singletonMap(snippet.getAuthorDisplayName(), snippet.getTextDisplay());
     }
 
     public List<Videos> getVideoList(String movie, String channelId, Long resultCount, Boolean sort) throws Throwable {
