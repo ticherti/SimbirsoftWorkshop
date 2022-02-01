@@ -55,6 +55,10 @@ public class MessageParser {
             ссылку на ролик;
             -v - выводит количество текущих просмотров.
             -l - выводит количество лайков под видео.
+            2. //yBot videoCommentRandom {имя канала}||{Название ролика} 
+            - Среди комментариев к ролику рандомно выбирается 1
+            3. //yBot channelInfo {имя канала}
+            - Бот выводит имя канала и ссылки на последние 5 роликов
             2. //yBot help - список доступных команд для взаимодействия.
             Другие:
             1 . //help - выводит список доступных команд.""";
@@ -160,7 +164,17 @@ public class MessageParser {
     }
 
     private String youtubeAction(String text) {
-        return text.contains("find") ? parseYoutubeFind(text) : parseYoutubeVideoComment(text);
+        if (text.contains("//yBot find")) {
+            return parseYoutubeFind(text);
+        }
+        if (text.contains("//yBot videoCommentRandom")) {
+            return parseYoutubeVideoComment(text);
+        }
+        if (text.contains("//yBot channelInfo")) {
+            return parseChannelInfo(text);
+        } else {
+            throw new ParseException();
+        }
     }
 
     private String parseYoutubeFind(String text) {
@@ -233,19 +247,14 @@ public class MessageParser {
     }
 
     private String parseYoutubeVideoComment(String text) {
-//        vidoCommentRanom {имя канала}||{Название ролика} - Среди
-//        комментариев к ролику рандомно выбирается 1 - Первым сообщением бот
-//        выводит login человека, который оставил этот комментарий - Вторым
-//        сообщением бот выводит сам комментарий
-
-        final String SPLIT_PATTERN_FIND = "//yBot videoCommentRandom|(\\|\\|)";
+        final String SPLIT_PATTERN = "//yBot videoCommentRandom|(\\|\\|)";
         String movieName;
         String channelName;
         String channelId;
         StringBuffer message;
         List<Videos> videoList = new ArrayList<>();
 
-        String[] splitCommands = text.split(SPLIT_PATTERN_FIND);
+        String[] splitCommands = text.split(SPLIT_PATTERN);
 
         movieName = splitCommands[2].trim();
         channelName = splitCommands[1].trim();
@@ -265,11 +274,57 @@ public class MessageParser {
             }
 
             for (Videos videos : videoList) {
-                Map<String, String> comments = searchVideoYoutube.getNameAndCommentMap(videos, 1);
+                Map<String, String> comments = searchVideoYoutube.getNameAndCommentMap(videos);
                 for (Map.Entry<String, String> entry : comments.entrySet()) {
-                    message.append(entry.getKey()+ " : "+ entry.getValue()+ "\n");
+                    message.append(entry.getKey() + " : " + entry.getValue() + "\n");
                 }
             }
+        } catch (GoogleJsonResponseException ex) {
+            log.error("GoogleJsonResponseException code: " + ex.getDetails().getCode() + " : "
+                    + ex.getDetails().getMessage());
+            message.append("Use the command '//help'. Error command to find movie - ").append(text);
+        } catch (IOException ex) {
+            log.error("IOException: " + ex.getMessage());
+            message.append("Use the command '//help'. Error command to find movie - ").append(text);
+        } catch (Throwable ex) {
+            log.error("Throwable: " + ex.getMessage());
+            message.append("Use the command '//help'. Error command to find movie - ").append(text);
+        }
+        videoList.clear();
+        return message.toString();
+    }
+
+    private String parseChannelInfo(String text) {
+        final String SPLIT_PATTERN = "//yBot channelInfo()";
+        String channelName;
+        String channelId;
+        StringBuffer message;
+        List<Videos> videoList = new ArrayList<>();
+
+        String[] splitCommands = text.split(SPLIT_PATTERN);
+        channelName = splitCommands[1].trim();
+
+        message = new StringBuffer();
+        try {
+            if (!channelName.isEmpty()) {
+                channelId = searchVideoYoutube.getChannelId(channelName);
+            } else {
+                channelId = "";
+            }
+
+            videoList = searchVideoYoutube.getVideoList(channelId, 5L, false);
+
+            if (videoList.size() == 0) {
+                return message.append(text).append("  not found. Use the command '//help'").toString();
+            }
+            final String youtubeAddress = "https://www.youtube.com/watch?v=";
+            final String delimeter = " | ";
+            message.append(channelName).append(delimeter);
+            for (Videos videos : videoList) {
+                message.append(youtubeAddress).append(videos.getId()).append(delimeter);
+            }
+            int lastDelimeter = message.lastIndexOf(delimeter);
+            message.delete(lastDelimeter, lastDelimeter + 2);
         } catch (GoogleJsonResponseException ex) {
             log.error("GoogleJsonResponseException code: " + ex.getDetails().getCode() + " : "
                     + ex.getDetails().getMessage());
