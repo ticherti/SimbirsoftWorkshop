@@ -15,7 +15,7 @@ public interface MessageMapper {
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "room.id", source = "roomId"),
-            @Mapping(target = "user", source = "user"),
+            @Mapping(target = "user.id", source = "userId"),
             @Mapping(target = "content", source = "content"),
             @Mapping(target = "creationDateTime", source = "creationDateTime")
     })
@@ -29,7 +29,7 @@ public interface MessageMapper {
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "roomId", source = "room.id"),
-            @Mapping(target = "user", source = "user"),
+            @Mapping(target = "userId", source = "user.id"),
             @Mapping(target = "content", source = "content"),
             @Mapping(target = "creationDateTime", source = "creationDateTime")
     })
@@ -38,7 +38,7 @@ public interface MessageMapper {
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "roomId", source = "room.id"),
-            @Mapping(target = "user", source = "user"),
+            @Mapping(target = "userId", source = "user.id"),
             @Mapping(target = "content", source = "content"),
             @Mapping(target = "creationDateTime", source = "creationDateTime")
     })

@@ -22,7 +22,7 @@ public class ResponseMessageDTO {
     private long roomId;
 
     @NotNull(message = "User mustn't be null")
-    private ResponseUserDTO user;
+    private long userId;
 
     @NotBlank(message = "Text must be less than 1000 characters")
     @Size(max = 1000)
